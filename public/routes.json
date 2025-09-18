@@ -1,0 +1,26 @@
+[
+  {
+    "label": "Library",
+    "path": "/library"
+  },
+  {
+    "label": "Anime",
+    "path": "/anime",
+    "children": [
+      { "label": "Watch", "path": "watch/:id/:slug" },
+      { "label": "Anime Detail", "path": ":id/:slug" }
+    ]
+  },
+  {
+    "label": "Manga",
+    "path": "/manga"
+  },
+  {
+    "label": "Novel",
+    "path": "/novel"
+  },
+  {
+    "label": "History",
+    "path": "/history"
+  }
+]

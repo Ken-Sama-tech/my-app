@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "./assets/utils.css";
+
+* {
+    color: #F5F7FA;
+}
