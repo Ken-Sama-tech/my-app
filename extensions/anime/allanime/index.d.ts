@@ -75,12 +75,12 @@ export type GetSourceURLResponse = {
   };
 };
 
-export type Entry = {
+export type Anime = {
   hasEntry: boolean;
   entry?: SearchResponseData[0];
 };
 
-export type LoadEntry = {
+export type LoadAnime = {
   sub: number;
   type: "player" | "player";
   dub: number;

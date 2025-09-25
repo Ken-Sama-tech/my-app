@@ -1,10 +1,8 @@
 import express, { type Request, Response, Router } from "express";
-import {
-  loadEntry as loadAllanime,
-  entry as allanime,
-} from "../../extensions/anime/allanime/loadAnime";
+import allanimeExt from "../../extensions/anime/allanime/loadAnime.js";
 
 const router: Router = express.Router();
+const allanime = allanimeExt();
 
 router.get("/anime", async (req: Request, res: Response) => {
   const result = [];

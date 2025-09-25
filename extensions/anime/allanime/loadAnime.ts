@@ -3,14 +3,14 @@ import Fuse from "fuse.js";
 import {
   SearchResponseData,
   TranslationType,
-  Entry,
-  LoadEntry,
+  Anime,
+  LoadAnime,
 } from "./index.js";
 import getSourceURL from "./getSourceURL.js";
 import decodeHexString from "./utils/decodeHexString.js";
 import { allAnimeHeaders } from "./vars.js";
 
-const entry = async (title: string, idMal: number): Promise<Entry> => {
+const anime = async (title: string, idMal: number): Promise<Anime> => {
   const res = await search(title);
   const { data } = res;
 
@@ -35,19 +35,19 @@ const entry = async (title: string, idMal: number): Promise<Entry> => {
   };
 };
 
-const loadEntry = async (
+const loadAnime = async (
   title: string,
   idMal: number = 0
-): Promise<LoadEntry> => {
-  const { hasEntry, entry: anime } = await entry(title, idMal);
+): Promise<LoadAnime> => {
+  const { hasEntry, entry } = await anime(title, idMal);
 
   if (!hasEntry) {
     console.error("Invalid entry");
     return;
   }
 
-  const { malId, name, _id } = anime;
-  const { sub, dub } = anime.availableEpisodes;
+  const { malId, name, _id } = entry;
+  const { sub, dub } = entry.availableEpisodes;
 
   return {
     showId: _id,
@@ -98,4 +98,8 @@ const loadEntry = async (
   };
 };
 
-export { entry, loadEntry };
+const allanimeExt = () => {
+  return { anime, loadAnime };
+};
+
+export default allanimeExt;

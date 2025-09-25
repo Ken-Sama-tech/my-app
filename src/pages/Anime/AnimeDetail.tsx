@@ -1,12 +1,12 @@
 import { FC, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import anilist from "../../../lib/api/anilist/anilist";
+import anilist from "../../lib/api/anilist/anilist";
 import MediaCard from "../../components/cards/MediaCard";
 import { AnilistMediaQueryResponse } from "./types/anime";
 import { Link } from "react-router-dom";
 import Badge from "../../components/ui/Badge";
-import formatDate from "../../../lib/utils/formatDate";
+import formatDate from "../../lib/utils/formatDate";
 import SimpleError from "../../components/ui/SimpleError";
 
 const queryData: string[] = [

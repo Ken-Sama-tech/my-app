@@ -25,5 +25,5 @@
     "noUncheckedSideEffectImports": true
   },
   "exclude": ["server", "extensions"],
-  "include": ["./lib/api/**/*ts", "./lib/**/*ts"]
+  "include": ["./src/lib/api/**/*ts"]
 }

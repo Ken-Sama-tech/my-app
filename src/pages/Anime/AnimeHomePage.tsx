@@ -1,9 +1,9 @@
 import MediaCard from "../../components/cards/MediaCard.js";
-import anilist from "../../../lib/api/anilist/anilist.js";
+import anilist from "../../lib/api/anilist/anilist.js";
 import { useQuery } from "@tanstack/react-query";
 import { AnilistPageQueryResponse } from "./types/anime.js";
 import SliderCarousel from "../../components/carousels/SliderCarousel.js";
-import slugify from "../../../lib/utils/slugify.js";
+import slugify from "../../lib/utils/slugify.js";
 import { FC } from "react";
 import { Link } from "react-router-dom";
 
