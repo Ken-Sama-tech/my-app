@@ -1,15 +1,16 @@
 import type { Response, Request } from "express";
-import { Anime, type AnimeSchema } from "../models/Media";
-import conn from "../config/config";
+import type { AnimeSchema } from "../models/Media";
+import { Anime } from "../models/Media";
+import conn from "../config/config.js";
 
-const addAnime = async (req: Request, res: Response): Promise<void> => {
+const insertAnime = async (req: Request, res: Response): Promise<void> => {
   const { title, anlId } = req.body as AnimeSchema;
-  const { romaji, english, native } = title;
+  const { romaji, english, native } = title || {};
 
   try {
     await conn();
 
-    if ((!romaji && !english && !native) || anlId) {
+    if ((!romaji && !english && !native) || !anlId) {
       res.status(500).json({
         error: true,
         message: `Field "anlid" or "title" cannot be empty`,
@@ -39,4 +40,4 @@ const addAnime = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { addAnime };
+export { insertAnime };

@@ -7,9 +7,9 @@ import Manga from "./pages/Manga/Manga";
 import Novel from "./pages/Novel/Novel";
 import axios from "axios";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import AnimeHomePage from "./pages/Anime/AnimeHomePage";
+import AnimeHomePage from "./features/Anime/AnimeHomePage";
 import LibraryHomePage from "./pages/Library/LibraryHomePage";
-import AnimeDetail from "./pages/Anime/AnimeDetail";
+import AnimeDetail from "./features/Anime/AnimeDetail";
 
 const queryClient = new QueryClient();
 const routes = (await axios.get<Array<RoutesResponse>>("/routes.json")).data;

@@ -1,4 +1,4 @@
-import Anime, { type AnimeSchema } from "../models/Media.js";
+import { Anime, type AnimeSchema } from "../models/Media.js";
 import conn from "../config/config.js";
 
 const testController = async () => {

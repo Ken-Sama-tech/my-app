@@ -47,8 +47,11 @@ const animeSchema = new Schema<AnimeSchema>(
                   },
                   vttEmbedded: { type: Boolean, default: false },
                   url: {
-                    sub: { type: String, default: null },
-                    dub: { type: String, default: null },
+                    type: {
+                      sub: { type: String, default: null },
+                      dub: { type: String, default: null },
+                    },
+                    default: {},
                   },
                   subtitles: {
                     type: [
@@ -76,4 +79,5 @@ const mangaSchema = new Schema({}, { collection: "media" });
 
 const Anime = mongoose.model<AnimeSchema>("Anime", animeSchema);
 const Manga = mongoose.model<MangaSchema>("Manga", mangaSchema);
-export { Anime, Manga, type AnimeSchema, MangaSchema };
+export type { AnimeSchema, MangaSchema };
+export { Anime, Manga };

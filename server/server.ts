@@ -6,10 +6,8 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 //routers
-import playerRouter from "./routes/proxy.route.js";
-import extensionsRouter from "./routes/extensions.route.js";
-
-import { loadEntry } from "../extensions/anime/allanime/loadAnime.js";
+import playerRouter from "./routes/proxy.js";
+import extensionsRouter from "./routes/extensions.js";
 
 dotenv.config();
 

@@ -1,5 +1,6 @@
-import { FC, useRef } from "react";
-import { SliderCarouselProps } from "./types/carousels";
+import { useRef } from "react";
+import type { FC } from "react";
+import type { SliderCarouselProps } from "./types/carousels";
 import SubHeading from "../headings/SubHeading";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";

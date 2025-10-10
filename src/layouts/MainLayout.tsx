@@ -1,5 +1,5 @@
 import Navbar from "./Navbar";
-import React, { useState, type ReactNode } from "react";
+import React, { useState } from "react";
 import { Menu } from "lucide-react";
 import type { LayoutProps } from "./types/layouts";
 

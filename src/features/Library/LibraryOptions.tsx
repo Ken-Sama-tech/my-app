@@ -1,5 +1,6 @@
-import { useState, ChangeEvent } from "react";
-import { OptionListProps } from "./types/optionList";
+import { useState } from "react";
+import type { ChangeEvent } from "react";
+import type { OptionListProps } from "./types/optionList";
 import useLocalStorage from "../../lib/hooks/useLocalStorage";
 
 const LibraryOptions = () => {

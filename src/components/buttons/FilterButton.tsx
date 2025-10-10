@@ -1,4 +1,4 @@
-import { FC } from "react";
+import type { FC } from "react";
 import type { FilterButtonProps } from "./types/buttons";
 import { ListFilter } from "lucide-react";
 import { useState } from "react";

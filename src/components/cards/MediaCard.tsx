@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { MediaCardProps } from "./types/cards";
+import type { FC } from "react";
+import type { MediaCardProps } from "./types/cards";
 import ErrorCard from "./ErrorCard";
 
 const MediaCard: FC<MediaCardProps> = ({
@@ -82,7 +82,7 @@ const MediaCard: FC<MediaCardProps> = ({
           {isLoading && (
             <div
               style={{ height: `${height}px`, width: `${width}px` }}
-              className={`realative flex shrink-0 grow-0 flex-col items-center justify-end skeleton rounded-lg aspect-2 ${
+              className={`realative flex shrink-0 grow-0 flex-col items-center justify-end skeleton rounded-lg aspect-2/3 ${
                 snap ? snapPosition : ""
               }`}
             >

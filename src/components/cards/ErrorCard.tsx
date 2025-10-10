@@ -1,6 +1,6 @@
 import { AlertCircle } from "lucide-react";
 import type { ErrorCardProps } from "./types/cards";
-import { FC } from "react";
+import type { FC } from "react";
 
 const ErrorCard: FC<ErrorCardProps> = ({ message, title }) => {
   return (

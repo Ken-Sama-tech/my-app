@@ -17,7 +17,7 @@ router.get("/player", async (req: Request, res: Response) => {
     const response = await axios.get<Readable>(url, {
       responseType: "stream",
       headers: {
-        Referer: "https://allmanga.to",
+        Referer: referrer,
       },
     });
 
