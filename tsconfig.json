@@ -10,9 +10,10 @@
     "types": ["node", "express", "dotenv"],
     "moduleResolution": "bundler",
     "target": "ES2023",
+    "declaration": true,
     "lib": ["ES2023"],
     "module": "ESNext"
   },
-  "include": ["./extensions/**/**/*.ts", "./server/**/*ts", "./lib/api/**/*ts"],
+  "include": ["./extensions/**/**/*.ts", "./server/**/*ts"],
   "exclude": ["dist", "node_modules"]
 }

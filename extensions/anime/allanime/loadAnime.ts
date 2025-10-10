@@ -3,14 +3,16 @@ import Fuse from "fuse.js";
 import {
   SearchResponseData,
   TranslationType,
-  Entry,
-  LoadEntry,
+  Anime,
+  LoadAnime,
+  AllAnimeExtension,
+  LoadEpisodeResponse,
 } from "./index.js";
 import getSourceURL from "./getSourceURL.js";
 import decodeHexString from "./utils/decodeHexString.js";
 import { allAnimeHeaders } from "./vars.js";
 
-const entry = async (title: string, idMal: number): Promise<Entry> => {
+const anime: Anime = async (title, idMal) => {
   const res = await search(title);
   const { data } = res;
 
@@ -35,19 +37,16 @@ const entry = async (title: string, idMal: number): Promise<Entry> => {
   };
 };
 
-const loadEntry = async (
-  title: string,
-  idMal: number = 0
-): Promise<LoadEntry> => {
-  const { hasEntry, entry: anime } = await entry(title, idMal);
+const loadAnime: LoadAnime = async (title, idMal = 0) => {
+  const { hasEntry, entry } = await anime(title, idMal);
 
   if (!hasEntry) {
-    console.error("Invalid entry");
+    console.error("No entry found");
     return;
   }
 
-  const { malId, name, _id } = anime;
-  const { sub, dub } = anime.availableEpisodes;
+  const { malId, name, _id } = entry;
+  const { sub, dub } = entry.availableEpisodes;
 
   return {
     showId: _id,
@@ -80,7 +79,10 @@ const loadEntry = async (
         translationType,
         String(validatedEp)
       );
-
+      if (!sources.data) {
+        console.error("No result found");
+        return;
+      }
       const source = sources.data.sourceUrls.find(
         (url) => url.type === "player"
       );
@@ -89,7 +91,7 @@ const loadEntry = async (
       const url = decodeHexString(hexedURL);
 
       return {
-        currentEpisode: episode,
+        currentEpisode: validatedEp,
         translationType,
         url,
         html: `<video autoplay muted controls width="540" height="220" className="size-full"><source src="http://localhost:3000/proxy/player?url=${url}&referrer=${allAnimeHeaders.Referer}" type="video/mp4" /></video>`,
@@ -98,4 +100,9 @@ const loadEntry = async (
   };
 };
 
-export { entry, loadEntry };
+const allanimeExt: AllAnimeExtension = () => {
+  return { anime, loadAnime, name: "allanime" };
+};
+
+export type { TranslationType, LoadEpisodeResponse };
+export default allanimeExt;

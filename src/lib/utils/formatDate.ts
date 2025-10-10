@@ -14,7 +14,7 @@ const formatDate = (timestamp: number, type: Type = "unix"): string => {
       });
       const year = date.getFullYear();
 
-      return `${month} ${day}, ${year}x`;
+      return `${month} ${day}, ${year}`;
     case "duration":
       const days: number = Math.floor(timestamp / 3600 / 24);
       const hours: number = Math.floor((timestamp % 86400) / 3600);

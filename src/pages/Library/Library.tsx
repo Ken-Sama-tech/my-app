@@ -7,13 +7,7 @@ const Library = () => {
   return (
     <MainLayout>
       <div className="h-full w-full">
-        <HeaderLayout
-          filterOption={true}
-          kebabOption={true}
-          FilterOptionElement={LibraryOptions}
-        >
-          Library
-        </HeaderLayout>
+        <HeaderLayout>Library</HeaderLayout>
         <Outlet />
       </div>
     </MainLayout>

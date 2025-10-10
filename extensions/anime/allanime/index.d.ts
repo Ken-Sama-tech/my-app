@@ -26,9 +26,9 @@ export type SearchResponseData = {
 }[];
 
 export type AllAnimeSearchResponse = {
-  data?: {
-    shows: {
-      edges: SearchResponseData;
+  readonly data?: {
+    readonly shows: {
+      readonly edges: SearchResponseData;
     };
   };
 };
@@ -39,10 +39,10 @@ export type AllAnimeHeaders = {
 };
 
 export type AllAnimeResponse<T> = {
-  data?: T | null;
-  status: number;
-  message: string;
-  error?: boolean;
+  readonly data?: T | null;
+  readonly status: number;
+  readonly message: string;
+  readonly error?: boolean;
 };
 
 export type AllAnimeSearchVariables = Variables & {
@@ -54,49 +54,64 @@ export type AllAnimeSearchVariables = Variables & {
 };
 
 export type GetSourceURLResponseData = {
-  episodeString: string;
-  sourceUrls: {
-    sourceUrl: string;
-    priority: number;
-    sourceName: string;
-    type: "iframe" | "player";
-    className?: string;
-    streamId?: string;
-    downloads?: {
-      sourceName: string;
-      downloadUrl: string;
+  readonly episodeString: string;
+  readonly sourceUrls: {
+    readonly sourceUrl: string;
+    readonly priority: number;
+    readonly sourceName: string;
+    readonly type: "iframe" | "player";
+    readonly className?: string;
+    readonly streamId?: string;
+    readonly downloads?: {
+      readonly sourceName: string;
+      readonly downloadUrl: string;
     };
   }[];
 };
 
 export type GetSourceURLResponse = {
-  data: {
-    episode: GetSourceURLResponseData;
+  readonly data: {
+    readonly episode: GetSourceURLResponseData;
   };
 };
 
-export type Entry = {
+export type Anime = (
+  title: string,
+  idMal: number
+) => Promise<{
   hasEntry: boolean;
   entry?: SearchResponseData[0];
+}>;
+
+export type LoadAnimeResponse = {
+  readonly sub: number;
+  readonly type: "player" | "player";
+  readonly dub: number;
+  readonly loadEpisode: LoadEpisode;
+  readonly showId: string;
+  readonly malId: number | string;
+  readonly name: string;
 };
 
-export type LoadEntry = {
-  sub: number;
-  type: "player" | "player";
-  dub: number;
-  loadEpisode: (
-    episode?: number,
-    translationType?: TranslationType
-  ) => Promise<LoadEpisode>;
-  showId: string;
-  malId: number | string;
-  name: string;
-  headers: AllAnimeHeaders;
+export type LoadAnime = (
+  title: string,
+  idMal: number
+) => Promise<LoadAnimeResponse>;
+
+export type LoadEpisodeResponse = {
+  readonly currentEpisode: number;
+  readonly translationType: TranslationType;
+  readonly url: string;
+  readonly html: string;
 };
 
-export type LoadEpisode = {
-  currentEpisode: number;
-  translationType: TranslationType;
-  url: string;
-  html: string;
+export type LoadEpisode = (
+  episode?: number,
+  translationType?: TranslationType
+) => Promise<LoadEpisodeResponse>;
+
+export type AllAnimeExtension = () => {
+  readonly loadAnime: LoadAnime;
+  readonly anime: Anime;
+  readonly name: string;
 };

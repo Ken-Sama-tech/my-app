@@ -1,5 +1,5 @@
 import type { UIProps } from "./types/ui";
-import { FC } from "react";
+import type { FC } from "react";
 
 const Badge: FC<UIProps> = ({ children, className = "" }) => {
   return (

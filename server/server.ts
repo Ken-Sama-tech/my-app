@@ -1,20 +1,18 @@
 //utilities
 import path from "path";
 import getDirname from "./utils/getDirname.js";
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 //dependencies
 import express from "express";
 import cors from "cors";
 //routers
-import playerRouter from "./routes/proxy.route.js";
-import extensionsRouter from "./routes/extensions.route.js";
-
-import { loadEntry } from "../extensions/anime/allanime/loadAnime.js";
+import playerRouter from "./routes/proxy.js";
+import extensionsRouter from "./routes/extensions.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT!;
 const __dirname = getDirname();
 
 app.use(express.json());

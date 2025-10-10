@@ -56,15 +56,17 @@ const anilist = () => {
       const queryArgs: string[] = [];
       const variables: MediaArgs = {
         type: type,
-        isAdult: isAdult,
       };
 
       queryArgs.push("$type: MediaType");
-      queryArgs.push("$isAdult: Boolean");
 
       if (search) {
         queryArgs.push("$search: String");
         variables["search"] = search;
+      }
+      if (isAdult) {
+        queryArgs.push("$isAdult: Boolean");
+        variables["isAdult"] = isAdult;
       }
       if (id) {
         queryArgs.push("$id: Int");
