@@ -36,6 +36,7 @@ const animeSchema = new Schema<AnimeSchema>(
             episode: { type: Number, required: true },
             playBackPosition: { type: Number, default: 0 },
             episodeTitle: { type: String, default: null },
+            bookmarked: { type: Boolean, default: false },
             sources: {
               type: [
                 {

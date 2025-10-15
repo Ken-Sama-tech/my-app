@@ -11,7 +11,11 @@ const Anime = () => {
         <HeaderLayout
           className="sticky z-1 top-0"
           element={
-            <KebabButton Element={AnimeOptions} className="!absolute right-4" />
+            <div className="h-full w-full flex justify-center items-center">
+              <div className="w-fit gap-x-2 justify-center items-center flex absolute right-2 top-1/2 -translate-y-1/2 h-full">
+                <KebabButton element={<AnimeOptions />} className="!relative" />
+              </div>
+            </div>
           }
         >
           Anime

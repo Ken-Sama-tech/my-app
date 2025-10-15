@@ -3,7 +3,7 @@ import type { FC } from "react";
 import type { KebabButtonProps } from "./types/buttons";
 import { EllipsisVertical } from "lucide-react";
 
-const KebabButton: FC<KebabButtonProps> = ({ className = "", Element }) => {
+const KebabButton: FC<KebabButtonProps> = ({ className = "", element }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   return (
     <div className={`relative h-8/10 w-6 flex justify-center ${className}`}>
@@ -18,7 +18,7 @@ const KebabButton: FC<KebabButtonProps> = ({ className = "", Element }) => {
           isActive ? "" : "hidden"
         }`}
       >
-        {<Element />}
+        {element}
       </div>
     </div>
   );

@@ -10,5 +10,5 @@ export type FilterButtonProps = CommonProps & {
 };
 
 export type KebabButtonProps = CommonProps & {
-  Element: FC;
+  element: ReactNode;
 };

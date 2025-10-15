@@ -9,11 +9,11 @@ type Arguments = {
   episode?: number;
 };
 
-type ResponseError = {
-  error: boolean;
-  message: string;
-  translationType: TranslationType;
-  currentEpisode: number;
+type GetRestOfTheEpisodesResponse = {
+  readonly [K in keyof LoadEpisodeResponse]?: LoadEpisodeResponse[K];
+} & {
+  readonly error?: boolean;
+  readonly message?: string;
 };
 
 type Error = {
@@ -30,7 +30,7 @@ type Response = {
 type GetRestOfTheEpisodes = (
   start?: number,
   end?: number
-) => Promise<Array<LoadEpisodeResponse | ResponseError>>;
+) => Promise<Array<GetRestOfTheEpisodesResponse>>;
 
 type Options = {
   extension?: string;
@@ -63,7 +63,7 @@ const getEpisode: GetEpisode = async ({ idMal, title, episode }, options) => {
         translationType
       );
 
-      const episodeUrls: Array<LoadEpisodeResponse | ResponseError> = [];
+      const episodeUrls: Array<GetRestOfTheEpisodesResponse> = [];
 
       return {
         data: loadEpisode,
@@ -87,6 +87,7 @@ const getEpisode: GetEpisode = async ({ idMal, title, episode }, options) => {
               });
               continue;
             }
+
             episodeUrls.push(response);
           }
 

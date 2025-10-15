@@ -1,4 +1,11 @@
-import type { Key, Value, LocalStorageResponse } from "./types/useLocalStorage";
+type Key = string;
+type Value = string | object | number | boolean;
+type LocalStorageResponse = {
+  message: string | null;
+  data?: unknown;
+  error?: boolean;
+  success?: boolean;
+};
 
 const useLocalStorage = () => {
   type Response<T = string> = LocalStorageResponse & {

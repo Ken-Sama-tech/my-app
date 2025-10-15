@@ -1,17 +1,35 @@
 import type { Request, Response } from "express";
 import Extensions from "../models/Extensions.js";
 import conn from "../config/config.js";
-import { AnimeExtensionsResponse } from "../models/types/Extensions.js";
+import type {
+  ExtensionsResponse,
+  ExtensionTypes,
+} from "../models/types/Extensions.js";
 import type { ObjectId } from "mongoose";
 
 type AnimeDocumentFields = {
-  -readonly [K in keyof AnimeExtensionsResponse]?: AnimeExtensionsResponse[K];
+  -readonly [K in keyof ExtensionsResponse]?: ExtensionsResponse[K];
 };
 
-const getExtensions = async (_: Request, res: Response) => {
+const getExtensions = async (req: Request, res: Response) => {
+  type Filter = {
+    type?: ExtensionTypes;
+  };
+
+  const { type } = req.query as { type?: ExtensionTypes };
+  const filter: Filter = {};
+
+  if (type) {
+    const allowedTypes: ExtensionTypes[] = ["anime", "manga", "novel"];
+
+    if (allowedTypes.includes(type)) {
+      filter["type"] = type;
+    }
+  }
+
   try {
     await conn();
-    const response = await Extensions.find();
+    const response = await Extensions.find(filter);
     res.status(200).json(response);
   } catch (error: any) {
     res.status(500).json({

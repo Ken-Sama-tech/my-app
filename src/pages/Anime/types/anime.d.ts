@@ -9,23 +9,28 @@ export type CoverImage = {
 };
 
 export type MediaFields = {
-  id: number;
-  idMal: number;
-  title: Title;
-  description?: string;
-  coverImage?: CoverImage;
-  meanScore?: number;
-  status?: string;
-  genres?: string[];
-  format?: string;
-  bannerImage?: string;
-  updatedAt?: number;
-  episodes?: number;
-  duration?: number;
-  nextAiringEpisode?: {
-    airingAt?: number;
-    episode?: number;
-    timeUntilAiring?: number;
+  readonly id: number;
+  readonly idMal: number;
+  readonly title: Title;
+  readonly description?: string;
+  readonly coverImage?: CoverImage;
+  readonly meanScore?: number;
+  readonly status?: string;
+  readonly genres?: string[];
+  readonly tags?: {
+    readonly id?: number;
+    readonly name?: string;
+    readonly description: ?string;
+  }[];
+  readonly format?: string;
+  readonly bannerImage?: string;
+  readonly updatedAt?: number;
+  readonly episodes?: number;
+  readonly duration?: number;
+  readonly nextAiringEpisode?: {
+    readonly airingAt?: number;
+    readonly episode?: number;
+    readonly timeUntilAiring?: number;
   };
 };
 

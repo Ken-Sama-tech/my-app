@@ -1,22 +1,23 @@
 import { useCallback } from "react";
 import type { ChangeEvent, FC } from "react";
-import useLocalStorage from "../../lib/hooks/useLocalStorage";
 
 type LabeledToggleProps = {
   logo: string;
   label: string;
   callback?: (name: string, isChecked: boolean) => void;
+  checked?: boolean;
 };
 
-const LabeledToggle: FC<LabeledToggleProps> = ({ label, logo, callback }) => {
-  const storage = useLocalStorage();
-
+const LabeledToggle: FC<LabeledToggleProps> = ({
+  label,
+  logo,
+  callback,
+  checked = false,
+}) => {
   const savedState = useCallback((node: HTMLInputElement) => {
-    const result = storage.get<boolean>(`toggle-${label}`);
     if (!node) return;
-    if (!result.data || result.error) return;
 
-    node.checked = result.data;
+    node.checked = checked;
   }, []);
 
   return (
@@ -38,7 +39,6 @@ const LabeledToggle: FC<LabeledToggleProps> = ({ label, logo, callback }) => {
         onChange={(node: ChangeEvent<HTMLInputElement>) => {
           const target = node.target;
           const isChecked = target.checked;
-          storage.set(`toggle-${label}`, isChecked);
           if (callback) callback(label, isChecked);
         }}
         type="checkbox"

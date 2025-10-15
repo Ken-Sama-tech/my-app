@@ -1,18 +1,22 @@
 import type { ObjectId } from "mongoose";
 
-export type AnimeExtensions = "allanime";
+export type ExtensionTypes = "anime" | "manga" | "novel";
 
 export type ExtensionsSchema = {
   name: string;
-  logo_url: string;
+  logo: string;
   source: string;
   active: boolean;
+  type: ExtensionTypes;
 };
 
-export type AnimeExtensionsResponse = {
+export type AnimeExtensions = "allanime";
+
+export type ExtensionsResponse = {
   readonly _id: ObjectId;
   readonly name: AnimeExtensions;
   readonly source: string;
-  readonly logo_url: string;
+  readonly logo: string;
   readonly active: boolean;
+  readonly type: ExtensionTypes;
 };

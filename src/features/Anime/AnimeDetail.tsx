@@ -9,6 +9,8 @@ import Badge from "../../components/ui/Badge";
 import formatDate from "../../lib/utils/formatDate";
 import SimpleError from "../../components/ui/SimpleError";
 import { MoveLeft } from "lucide-react";
+import AddToLibraryToggle from "../../components/checkboxes/AddToLibrarytoggle";
+import ExtensionResults from "./ExtensionResults";
 
 const queryData: string[] = [
   "id",
@@ -18,6 +20,7 @@ const queryData: string[] = [
   "meanScore",
   "status",
   "genres",
+  "tags { name id}",
   "format",
   "description",
   "bannerImage",
@@ -64,10 +67,10 @@ const AnimeDetail: FC = () => {
     },
     [isLoading, durationTilNextEP]
   );
-
+  console.log(anime?.tags);
   return (
     <>
-      <section className="flex items-start w-full h-[70vh] sm:h-[65vh] bg-neutral-900 shadow-2xl z-0">
+      <section className="flex items-start w-full h-[75vh] sm:h-[65vh] bg-neutral-900 shadow-2xl z-0">
         {!isError && (
           <>
             {!isLoading && (
@@ -88,7 +91,7 @@ const AnimeDetail: FC = () => {
                     <Link
                       target="_blank"
                       to={anime?.coverImage?.extraLarge || "#"}
-                      className="block absolute top-[120%] z-1 sm:top-2/3 md:top-1/2 left-4"
+                      className="block absolute top-[120%] z-1 sm:top-2/3 md:top-1/2 left-2.5"
                     >
                       <MediaCard
                         src={anime?.coverImage?.extraLarge}
@@ -97,82 +100,101 @@ const AnimeDetail: FC = () => {
                         height={230}
                         width={160}
                       />
+                      <div className="absolute w-full h-8 mt-1">
+                        <AddToLibraryToggle />
+                      </div>
                     </Link>
                   </div>
                   <div className="relative size-full">
-                    <div className="absolute w-full md:w-6/10 lg:w-10/12 h-full md:left-[190px] grid grid-cols-6 grid-rows-6 items-start p-2">
-                      <div className="w-full flex gap-1 py-0.5 flex-wrap md:flex-nowrap md:overflow-x-auto col-span-3 col-start-1 row-span-2 col-end-4 row-start-6 row-end-6 md:col-span-6 md:row-span-1 md:row-start-1 rm-scrollbar sm:col-end-3">
-                        <Badge className="!px-2 !py-0.5 text-sm h-fit text-nowrap grow-0">
-                          {anime?.status || "unknown"}
-                        </Badge>
-                        <Badge className="!px-2 !py-0.5 text-sm h-fit text-nowrap grow-0">
-                          {"Eps: " + (anime?.episodes || "null")}
-                        </Badge>
-                        <Badge className="!px-2 !py-0.5 text-sm h-fit text-nowrap grow-0">
-                          {anime?.format || "unknown"}
-                        </Badge>
-                        <Badge className="!px-2 !py-0.5 text-sm h-fit text-nowrap grow-0">
-                          {anime?.duration
-                            ? anime.duration + " mins"
-                            : "duration: uknown"}
-                        </Badge>
-                        <Badge className="!px-2 !py-0.5 text-sm h-fit text-nowrap grow-0">
-                          {(Number(anime?.meanScore) * 0.1).toFixed(1) || 0}
-                        </Badge>
-                      </div>
-                      <div className="grow h-full overflow-hidden flex col-span-4 col-start-4 row-span-6 md:col-span-6 md:row-span-5 md:row-start-2 sm:col-span-4 ">
-                        <div className="h-full w-full flex flex-col md:flex-row gap-0.5">
-                          <div className="w-full md:w-1/2 h-full p-1 text-md">
-                            <h2 className="text-md font-medium">
-                              {(() => {
-                                const title = anime?.title;
-                                return (
-                                  title?.english ||
-                                  title?.romaji ||
-                                  title?.native
-                                );
-                              })()}
-                            </h2>
-                            <div className="text-sm grid grid-cols-1 w-full">
-                              <span className="italic">
-                                Romaji: {anime?.title.romaji}
-                              </span>
-                              <span className="italic">
-                                Native: {anime?.title.native}
-                              </span>
-                              <span className="italic">
-                                Updated at: {formatDate(anime?.updatedAt || 0)}
-                              </span>
-                              <span className="italic" ref={nextEpisodeRef}>
-                                Next episode at: 00:00:00:00
-                              </span>
-                              <span className="italic text-wrap flex flex-wrap shrink-0 gap-1">
-                                Genres:
-                                {anime?.genres?.map((genre, idx) => {
-                                  if (
-                                    anime.genres?.length &&
-                                    anime.genres.length - 1 === idx
-                                  )
-                                    return (
-                                      <span key={genre + idx}>{genre}</span>
-                                    );
+                    <div className="absolute w-fit h-full md:right-0 md:left-[190px]">
+                      <div className="size-full relative grid grid-cols-6 grid-rows-7 items-start">
+                        <div className="w-full absolute bottom-2 flex gap-1 py-0.5 flex-wrap md:flex-nowrap md:overflow-x-auto col-span-4 col-start-1 row-span-2 col-end-4 row-start-7 row-end-7 md:col-span-7 md:col-start-1 md:relative md:bottom-0 md:row-span-1 md:row-start-1 rm-scrollbar sm:col-end-3">
+                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                            {"Score: " +
+                              (Number(anime?.meanScore) * 0.1).toFixed(1) || 0}
+                          </Badge>
+                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                            {"Eps: " + (anime?.episodes || "??")}
+                          </Badge>
+                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                            {anime?.format || "format??"}
+                          </Badge>
+                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                            {anime?.duration
+                              ? anime.duration + " mins"
+                              : "duration??"}
+                          </Badge>
+                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                            {anime?.status || "unknown"}
+                          </Badge>
+                        </div>
+                        <div className="w-full h-full overflow-hidden flex col-span-4 col-start-4 row-span-7 row-start-1 md:col-span-7 md:row-span-6 md:row-start-2 sm:col-start-3 sm:col-span-5 ">
+                          <div className="h-full w-full flex flex-col md:flex-row gap-0.5">
+                            <div className="h-4/6 overflow-y-auto w-full md:w-1/2 md:h-full p-1 text-md rm-scrollbar">
+                              <h2 className="text-md font-medium">
+                                {(() => {
+                                  const title = anime?.title;
                                   return (
-                                    <span key={genre + idx}>{genre}, </span>
+                                    title?.english ||
+                                    title?.romaji ||
+                                    title?.native
                                   );
-                                })}
-                              </span>
+                                })()}
+                              </h2>
+                              <div className="text-sm grid grid-cols-1 w-full">
+                                <span className="italic">
+                                  Romaji: {anime?.title.romaji}
+                                </span>
+                                <span className="italic">
+                                  Native: {anime?.title.native}
+                                </span>
+                                <span className="italic">
+                                  Updated at:{" "}
+                                  {formatDate(anime?.updatedAt || 0)}
+                                </span>
+                                <span className="italic" ref={nextEpisodeRef}>
+                                  Next episode at: 00:00:00:00
+                                </span>
+                                <span className="italic text-wrap flex flex-wrap shrink-0 gap-1">
+                                  Genres:
+                                  {anime?.genres?.map((genre, idx) => {
+                                    if (
+                                      anime.genres?.length &&
+                                      anime.genres.length - 1 === idx
+                                    )
+                                      return (
+                                        <span key={genre + idx}>{genre}</span>
+                                      );
+                                    return (
+                                      <span key={genre + idx}>{genre}, </span>
+                                    );
+                                  })}
+                                </span>
+
+                                <span className="italic relative text-nowrap w-full text-ellipsis line-clamp-1 inline gap-0.5 group-hover">
+                                  Tags:{" "}
+                                  {anime?.tags?.map((tag, idx) =>
+                                    idx + 1 === anime.tags?.length
+                                      ? tag.name
+                                      : tag.name + ", "
+                                  )}
+                                  <span className="absolute z-1 left-0 bg-emerald-600">
+                                    assaassa
+                                  </span>
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                          <div className="w-full md:w-1/2 h-full p-1">
-                            <span className="font-medium">Synopsis: </span>
-                            <div className="h-full p-1 block overflow-auto rm-scrollbar">
-                              <p
-                                className="size-full text-sm"
-                                ref={(node: HTMLParagraphElement) => {
-                                  if (!node) return;
-                                  node.innerHTML = anime?.description || "";
-                                }}
-                              ></p>
+                            <div className="w-full h-3/6 md:h-full md:w-1/2 p-1 overflow-hidden">
+                              <span className="font-medium">Synopsis: </span>
+                              <div className="h-8/10 overflow-auto p-1 block rm-scrollbar">
+                                <p
+                                  className="size-full text-sm text-justify"
+                                  ref={(node: HTMLParagraphElement) => {
+                                    if (!node) return;
+                                    node.innerHTML = anime?.description || "";
+                                  }}
+                                ></p>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -202,7 +224,7 @@ const AnimeDetail: FC = () => {
                       <span className="skeleton-text h-5 w-12 rounded-full shrink-0"></span>
                     </div>
                     <div className="col-span-6 col-start-4 md:col-start-3 lg:col-start-2 row-span-6 row-start-1 md:row-start-2 flex flex-col md:flex-row">
-                      <div className="w-full md:w-1/2 flex gap-y-0.5 flex-col p-1">
+                      <div className="w-full md:w-1/2 h-1/2 md:h-full flex gap-y-0.5 flex-col p-1">
                         <span className="skeleton-text rounded-full w-25 h-5"></span>
                         <div className="w-full h-fit flex flex-col skeleton grow rounded-lg p-1">
                           <span className="skeleton-text rounded-full h-5 w-30"></span>
@@ -211,15 +233,13 @@ const AnimeDetail: FC = () => {
                           <span className="skeleton-text rounded-full h-5 w-1/2"></span>
                         </div>
                       </div>
-                      <div className="w-full md:w-1/2 grow flex gap-y-0.5 flex-col p-1">
+                      <div className="w-full md:w-1/2 h-1/2 md:h-full flex gap-y-0.5 flex-col p-1">
                         <span className="skeleton-text rounded-full w-25 h-5"></span>
                         <div className="w-full flex flex-col skeleton grow rounded-lg p-1">
                           <span className="skeleton-text rounded-full h-5 w-1/2"></span>
                           <span className="skeleton-text rounded-full h-5 w-9/10"></span>
                           <span className="skeleton-text rounded-full h-5 w-10/10"></span>
                           <span className="skeleton-text rounded-full h-5 w-1/3"></span>
-                          <span className="skeleton-text rounded-full h-5 w-9/10 block md:hidden"></span>
-                          <span className="skeleton-text rounded-full h-5 w-9/10 block md:hidden"></span>
                         </div>
                       </div>
                     </div>
@@ -237,7 +257,6 @@ const AnimeDetail: FC = () => {
           </div>
         )}
       </section>
-      <section className="w-full h-full bg-red-400"></section>
     </>
   );
 };

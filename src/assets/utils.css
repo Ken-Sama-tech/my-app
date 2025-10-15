@@ -1,63 +1,63 @@
 .rm-scrollbar::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .border-slide {
-    position: relative;
+  position: relative;
 }
 
 .border-slide::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    width: 0;
-    transition: all 0.7s ease;
-    height: 4px;
-    left: 0;
-    pointer-events: none;
-    /* left: 50%; */
-    /* transform: translate(-50%, -50%); */
-    background-color: var(--color-blue-700);
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  transition: all 0.7s ease;
+  height: 4px;
+  left: 0;
+  pointer-events: none;
+  /* left: 50%; */
+  /* transform: translate(-50%, -50%); */
+  background-color: var(--color-blue-700);
 }
 
 .border-slide:hover::after {
-    width: 100%;
+  width: 100%;
 }
 
 .border-slide-active {
-    position: relative
+  position: relative;
 }
 
 .border-slide-active::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 4px;
-    animation: border-slide 0.4s linear forwards;
-    background-color: var(--color-blue-700);
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  animation: border-slide 0.4s linear forwards;
+  background-color: var(--color-blue-700);
 }
 
 .dim {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .dim::after {
-    content: " ";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.3);
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: var(--color-neutral-800); 
+  background: var(--color-neutral-800);
 }
 
 .skeleton::after {
@@ -75,10 +75,10 @@
 }
 
 .skeleton-text {
-  height: 0.9rem;            
-  border-radius: 0.45rem;     
+  height: 0.9rem;
+  border-radius: 0.45rem;
   margin: 0.4rem 0;
-  background: var(--color-neutral-700) !important; 
+  background: var(--color-neutral-700) !important;
 }
 
 @keyframes skeleton-shimmer {
@@ -87,12 +87,17 @@
   }
 }
 
-
 @keyframes border-slide {
-    from {
-        width: 0;
-    }
-    to {
-        width: 100%;
-    }
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .responsive-sb::-webkit-scrollbar {
+    display: block;
+  }
 }

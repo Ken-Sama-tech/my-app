@@ -69,6 +69,7 @@ const loadAnime: LoadAnime = async (title, idMal = 0) => {
         );
         return 1;
       };
+
       const validatedEp: number | string =
         Number(episode) <= 0 || Number(episode) > episodes
           ? invalidEpisode()
@@ -79,6 +80,7 @@ const loadAnime: LoadAnime = async (title, idMal = 0) => {
         translationType,
         String(validatedEp)
       );
+
       if (!sources.data) {
         console.error("No result found");
         return;

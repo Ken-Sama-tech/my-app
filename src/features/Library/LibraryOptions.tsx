@@ -1,7 +1,22 @@
 import { useState } from "react";
 import type { ChangeEvent } from "react";
-import type { OptionListProps } from "./types/optionList";
 import useLocalStorage from "../../lib/hooks/useLocalStorage";
+
+type Props = {
+  label: string;
+  // callback: () => void;
+};
+
+type CheckTypeOption = Props & {
+  type: "check";
+};
+
+type EnumTypeOption = Props & {
+  type: "enum";
+  options?: string[];
+};
+
+type OptionListProps = Array<EnumTypeOption | CheckTypeOption>;
 
 const LibraryOptions = () => {
   const ls = useLocalStorage();

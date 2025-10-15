@@ -28,6 +28,7 @@ export type AnimeSchema = {
       episode: number;
       playBackPosition: number;
       episodeTitle?: string;
+      bookmarked: boolean;
       sources?: {
         name: string;
         type: "player" | "m3u8";

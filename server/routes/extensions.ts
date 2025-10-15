@@ -19,7 +19,7 @@ type AnimeExtensionArguments = {
   readonly idMal: string;
 };
 
-router.get("/anime", getExtensions);
+router.get("/", getExtensions);
 
 router.patch("/anime/update", updateExtension);
 
@@ -71,7 +71,7 @@ router.get("/anime/search", async (req: Request, res: Response) => {
       });
     }
 
-    res.json(result);
+    res.status(200).json(result);
   } catch (error: any) {
     res.status(500).json({ error: true, message: error.message || error });
   }
@@ -111,11 +111,12 @@ router.get("/anime/episode", async (req: Request, res: Response) => {
       throw new Error(`${extension}: ${message}`);
     }
 
-    const episodes = await response.getRestOfTheEpisodes(
-      Number(episode),
-      Number(episode) + 19
-    );
-    res.json(episodes);
+    // const episodes = await response.getRestOfTheEpisodes(
+    //   Number(episode),
+    //   Number(episode) + 19
+    // );
+
+    res.status(200).send(data.html);
   } catch (error: any) {
     res.status(500).json({ error: true, message: error.message || error });
   }

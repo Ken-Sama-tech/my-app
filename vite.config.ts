@@ -8,4 +8,5 @@ export default defineConfig({
   build: {
     outDir: "dist/client",
   },
+  // envDir: "C:\\Users\\Admin\\OneDrive\\Desktop\\projects\\my-app\\.env",
 });

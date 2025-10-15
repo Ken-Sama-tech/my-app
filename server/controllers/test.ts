@@ -12,9 +12,11 @@ const testController = async () => {
     episodes: {
       completeEpisodeNumber: 10,
       lastEpisodeWatched: 1,
+
       availableEpisodes: [
         {
           episode: 1,
+          bookmarked: true,
           playBackPosition: 0,
           episodeTitle: null,
           sources: [
@@ -48,4 +50,4 @@ const testController = async () => {
   console.log("saved");
 };
 
-testController();
+export default testController;
