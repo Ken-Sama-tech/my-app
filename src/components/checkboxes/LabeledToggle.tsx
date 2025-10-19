@@ -22,16 +22,17 @@ const LabeledToggle: FC<LabeledToggleProps> = ({
 
   return (
     <label
+      // title={label}
       htmlFor={label}
-      className="w-full flex items-center gap-1 relative cursor-pointer"
+      className="w-full rounded-md group px-1 py-0.5 hover:bg-neutral-400 active:bg-neutral-400 flex items-center gap-1 relative cursor-pointer"
     >
       <div
-        className="size-6 bg-cover aspect-1/1"
+        className="size-6 bg-cover aspect-1/1 bg-center"
         style={{
           backgroundImage: `url(${logo})`,
         }}
       ></div>
-      <span className="!text-sm uppercase pointer-none select-none">
+      <span className="!text-sm line-clamp-1 max-w-1/2 text-ellipsis uppercase pointer-none select-none">
         {label}
       </span>
       <input
@@ -43,8 +44,9 @@ const LabeledToggle: FC<LabeledToggleProps> = ({
         }}
         type="checkbox"
         id={label}
-        className="absolute invisible size-full right-0 top-1/2 -translate-y-1/2 after:content-[''] after:absolute after:right-1 after:border after:h-7/10 after:visible after:top-1/2 after:-translate-y-1/2 after:w-10 after:rounded-full after:transition-colors after:duration-150 after:ease-in checked:after:bg-blue-300 before:z-2 before:content-[''] before:size-3 before:top-1/2 before:-translate-y-1/2 before:rounded-full before:absolute before:bg-white before:-translate-x-6.5 before:right-1 before:visible checked:before:-translate-x-0.5 before:transition-all before:ease-in before:duration-150 checked:before:bg-blue-700"
+        className="labeled-toggle"
       />
+      <span className="tooltip-bottom">{label}</span>
     </label>
   );
 };

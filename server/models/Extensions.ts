@@ -5,6 +5,7 @@ const extensionsSchema = new mongoose.Schema<ExtensionsSchema>({
   name: {
     type: String,
     required: true,
+    index: true,
   },
   logo: {
     type: String,
@@ -23,6 +24,8 @@ const extensionsSchema = new mongoose.Schema<ExtensionsSchema>({
     enum: ["anime", "manga", "novel"],
   },
 });
+
+extensionsSchema.index({ type: 1, active: 1, name: -1 });
 
 const Extensions = mongoose.model<ExtensionsSchema>(
   "Extension",

@@ -10,7 +10,7 @@ export type ExtensionsSchema = {
   type: ExtensionTypes;
 };
 
-export type AnimeExtensions = "allanime";
+export type AnimeExtensions = "allanime" | "Hentai Haven";
 
 export type ExtensionsResponse = {
   readonly _id: ObjectId;

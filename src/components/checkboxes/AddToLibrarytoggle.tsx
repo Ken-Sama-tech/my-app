@@ -33,7 +33,7 @@ const AddToLibraryToggle: FC<AddToLibraryToggleProps> = ({
           });
         }}
         type="checkbox"
-        className="size-full invisible relative after:content-[''] checked:after:bg-red-400 after:visible after:absolute after:size-full after:border-2 after:rounded-full checked:after:border-none after:transition-all after:duration-100 after:ease-in"
+        className="add-to-lib-toggle"
         id={uniqueId}
       />
 
@@ -48,7 +48,7 @@ const AddToLibraryToggle: FC<AddToLibraryToggleProps> = ({
                 node.hidden = true;
               }, 1000);
             }}
-            className="absolute bg-neutral-800 opacity-90 px-2 py-0.5 text-sm rounded-full -top-[100%]"
+            className="absolute bg-neutral-950 opacity-90 px-2.5 py-0.5 text-sm rounded-full -top-[100%]"
           >
             Added to library
           </span>

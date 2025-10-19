@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./assets/utils.css";
+@import "./assets/inputs.css";
 
 * {
   color: #f5f7fa;

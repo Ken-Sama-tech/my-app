@@ -7,7 +7,7 @@
     "label": "Anime",
     "path": "/anime",
     "children": [
-      { "label": "Watch", "path": "watch/:id/:slug" },
+      { "label": "Watch", "path": ":id/:slug/watch" },
       { "label": "Anime Detail", "path": ":id/:slug" }
     ]
   },

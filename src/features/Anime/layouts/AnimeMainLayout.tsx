@@ -1,15 +1,15 @@
-import MainLayout from "../../layouts/MainLayout";
-import HeaderLayout from "../../layouts/HeaderLayout";
+import MainLayout from "../../../layouts/MainLayout";
+import HeaderLayout from "../../../layouts/HeaderLayout";
 import { Outlet } from "react-router-dom";
-import KebabButton from "../../components/buttons/KebabButton";
-import AnimeOptions from "../../features/Anime/AnimeOptions";
+import KebabButton from "../../../components/buttons/KebabButton";
+import AnimeOptions from "../components/AnimeOptions";
 
 const Anime = () => {
   return (
     <MainLayout>
       <div className="h-fit relative w-full">
         <HeaderLayout
-          className="sticky z-1 top-0"
+          className="sticky z-2 top-0"
           element={
             <div className="h-full w-full flex justify-center items-center">
               <div className="w-fit gap-x-2 justify-center items-center flex absolute right-2 top-1/2 -translate-y-1/2 h-full">

@@ -14,11 +14,14 @@ router.get("/player", async (req: Request, res: Response) => {
     });
 
   try {
+    const range = req.headers.range;
     const response = await axios.get<Readable>(url, {
       responseType: "stream",
       headers: {
         Referer: referrer,
+        Range: range,
       },
+      validateStatus: () => true,
     });
 
     const contentType = response.headers["content-type"];
@@ -31,6 +34,7 @@ router.get("/player", async (req: Request, res: Response) => {
     if (acceptRanges) res.setHeader("Accept-Ranges", acceptRanges);
     if (contentRange) res.setHeader("content-range", contentRange);
 
+    res.status(response.status);
     response.data.pipe(res);
   } catch (error: any) {
     res.status(500).json({

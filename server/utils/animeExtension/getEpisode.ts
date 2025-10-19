@@ -1,7 +1,8 @@
 import allanimeExt, {
   type TranslationType,
   LoadEpisodeResponse,
-} from "../../extensions/anime/allanime/loadAnime.js";
+} from "../../../extensions/anime/allanime/loadAnime.js";
+import { allAnimeHeaders } from "../../../extensions/anime/allanime/vars.js";
 
 type Arguments = {
   idMal?: number;
@@ -9,11 +10,16 @@ type Arguments = {
   episode?: number;
 };
 
-type GetRestOfTheEpisodesResponse = {
-  readonly [K in keyof LoadEpisodeResponse]?: LoadEpisodeResponse[K];
+type LoadEpisodeFields = {
+  readonly [K in keyof LoadEpisodeResponse]: LoadEpisodeResponse[K];
 } & {
-  readonly error?: boolean;
-  readonly message?: string;
+  error: boolean;
+  message: string;
+};
+
+type GetRestOfTheEpisodesResponse = {
+  episodes: LoadEpisodeFields[];
+  referrer: string;
 };
 
 type Error = {
@@ -30,7 +36,7 @@ type Response = {
 type GetRestOfTheEpisodes = (
   start?: number,
   end?: number
-) => Promise<Array<GetRestOfTheEpisodesResponse>>;
+) => Promise<GetRestOfTheEpisodesResponse>;
 
 type Options = {
   extension?: string;
@@ -63,7 +69,7 @@ const getEpisode: GetEpisode = async ({ idMal, title, episode }, options) => {
         translationType
       );
 
-      const episodeUrls: Array<GetRestOfTheEpisodesResponse> = [];
+      const episodes: Array<LoadEpisodeFields> = [];
 
       return {
         data: loadEpisode,
@@ -76,22 +82,27 @@ const getEpisode: GetEpisode = async ({ idMal, title, episode }, options) => {
           for (let i = startCount; i <= stopCount; i++) {
             if (i > episode) break;
             const response = await anime.loadEpisode(i, translationType);
-            console.log(response);
 
             if (!response) {
-              episodeUrls.push({
+              episodes.push({
                 translationType,
                 currentEpisode: i,
+                html: "",
+                url: null,
                 error: true,
                 message: "Episode not found",
               });
               continue;
             }
 
-            episodeUrls.push(response);
+            episodes.push({
+              ...response,
+              error: false,
+              message: "Episodes found",
+            });
           }
 
-          return episodeUrls;
+          return { referrer: allAnimeHeaders.Referer, episodes };
         },
       };
     }

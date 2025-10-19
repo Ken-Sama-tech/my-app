@@ -5,7 +5,7 @@ import SliderCarousel from "../../components/carousels/SliderCarousel";
 import slugify from "../../lib/utils/slugify";
 import { Link } from "react-router-dom";
 import type { FC } from "react";
-import type { AnilistPageQueryResponse } from "../../pages/Anime/types/anime";
+import type { AnilistPageQueryResponse } from "./types/anime";
 
 const queryData: string[] = [
   "id",
@@ -49,6 +49,8 @@ const AnimeHomePage: FC = () => {
     queryKey: ["top-anime"],
   });
 
+  console.log(trendingAnimeHasError);
+
   return (
     <>
       <div className="flex overflow-auto flex-wrap gap-10 rm-scrollbar p-5">
@@ -58,6 +60,7 @@ const AnimeHomePage: FC = () => {
               return <MediaCard snap key={idx} />;
             })}
           {!isTrendingAnimeLoading &&
+            !trendingAnimeHasError &&
             trendingAnime?.data?.Page.media.map((item) => {
               const { romaji, english, native } = item.title;
 
@@ -73,8 +76,8 @@ const AnimeHomePage: FC = () => {
                     score={item.meanScore}
                     format={item.format}
                     status={item.status}
-                    snap
                     isError={trendingAnimeHasError}
+                    snap
                     isLoading={false}
                     src={item.coverImage?.extraLarge}
                     title={english || romaji || native}

@@ -1,0 +1,7 @@
+.labeled-toggle {
+  @apply absolute border invisible size-full right-0 top-1/2 -translate-y-1/2 after:content-[''] after:absolute after:right-1 after:border after:h-7/10 after:visible after:top-1/2 after:-translate-y-1/2 after:w-10 after:rounded-full after:transition-colors after:duration-150 after:ease-in checked:after:bg-blue-300 before:z-2 before:content-[''] before:size-3 before:top-1/2 before:-translate-y-1/2 before:rounded-full before:absolute before:bg-white before:-translate-x-6.5 before:right-1 before:visible checked:before:-translate-x-0.5 before:transition-all before:ease-in before:duration-150 checked:before:bg-blue-700;
+}
+
+.add-to-lib-toggle {
+  @apply size-full invisible relative after:content-[''] checked:after:bg-red-400 after:visible after:absolute after:size-full after:border-2 after:rounded-full checked:after:border-none after:transition-all after:duration-100 after:ease-in;
+}

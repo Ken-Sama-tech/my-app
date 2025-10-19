@@ -2,14 +2,15 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import type { RoutesKey, RoutesResponse, RoutesValue } from "./types/routes";
 import Library from "./pages/Library/Library";
 import History from "./pages/History/History";
-import Anime from "./pages/Anime/Anime";
+import Anime from "./features/Anime/layouts/AnimeMainLayout";
 import Manga from "./pages/Manga/Manga";
 import Novel from "./pages/Novel/Novel";
 import axios from "axios";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import AnimeHomePage from "./features/Anime/AnimeHomePage";
+import AnimeHomePage from "./pages/Anime/AnimeHomePage";
 import LibraryHomePage from "./pages/Library/LibraryHomePage";
-import AnimeDetail from "./features/Anime/AnimeDetail";
+import AnimeDetail from "./pages/Anime/AnimeDetail";
+import AnimeWatch from "./pages/Anime/AnimeWatch";
 
 const queryClient = new QueryClient();
 const routes = (await axios.get<Array<RoutesResponse>>("/routes.json")).data;
@@ -21,7 +22,7 @@ const routesMap: Map<RoutesKey, RoutesValue> = new Map([
       default: <AnimeHomePage />,
       childrenRoutes: new Map([
         ["Anime Detail", <AnimeDetail />],
-        ["Watch", <h1>Watch</h1>],
+        ["Watch", <AnimeWatch />],
       ]),
     },
   ],

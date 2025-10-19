@@ -44,6 +44,10 @@
   overflow: hidden;
 }
 
+.absolute-center {
+  @apply absolute top-1/2 left-1/2 -translate-1/2;
+}
+
 .dim::after {
   content: " ";
   position: absolute;
@@ -74,11 +78,32 @@
   animation: skeleton-shimmer 1.2s infinite;
 }
 
+.tooltip-bottom {
+  @apply absolute top-full mt-2 bg-neutral-700 py-1.5 pointer-events-none hidden group-hover:block group-active:block rounded-lg px-2 left-0 before:content-[''] before:absolute before:size-3 before:border-transparent before:border-6 before:border-b-neutral-700 before:left-1/2 before:-translate-x-1/2 before:bottom-full z-1;
+  animation: fade-in 0.5s;
+}
+
 .skeleton-text {
   height: 0.9rem;
   border-radius: 0.45rem;
   margin: 0.4rem 0;
   background: var(--color-neutral-700) !important;
+}
+
+.fade-in {
+  animation: fade-in 1s;
+}
+
+@keyframes fade-in {
+  0%,
+  50%,
+  75%,
+  90% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes skeleton-shimmer {

@@ -3,14 +3,14 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import anilist from "../../lib/api/anilist/anilist";
 import MediaCard from "../../components/cards/MediaCard";
-import type { AnilistMediaQueryResponse } from "../../pages/Anime/types/anime";
+import type { AnilistMediaQueryResponse } from "./types/anime";
 import { Link } from "react-router-dom";
 import Badge from "../../components/ui/Badge";
 import formatDate from "../../lib/utils/formatDate";
 import SimpleError from "../../components/ui/SimpleError";
 import { MoveLeft } from "lucide-react";
 import AddToLibraryToggle from "../../components/checkboxes/AddToLibrarytoggle";
-import ExtensionResults from "./ExtensionResults";
+import AnimeExtensionResult from "../../features/Anime/components/AnimeExtensionResult";
 
 const queryData: string[] = [
   "id",
@@ -43,9 +43,11 @@ const AnimeDetail: FC = () => {
   const id = Number(params.id);
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: [`anime-${id}`],
+    queryKey: ["anime", id],
     queryFn: () => media(id).query(),
   });
+  const titles = data?.data?.Media.title;
+  const title = titles?.romaji || titles?.english || titles?.native;
 
   const anime = data?.data?.Media;
   let durationTilNextEP = anime?.nextAiringEpisode?.timeUntilAiring || 0;
@@ -67,7 +69,7 @@ const AnimeDetail: FC = () => {
     },
     [isLoading, durationTilNextEP]
   );
-  console.log(anime?.tags);
+
   return (
     <>
       <section className="flex items-start w-full h-[75vh] sm:h-[65vh] bg-neutral-900 shadow-2xl z-0">
@@ -132,14 +134,7 @@ const AnimeDetail: FC = () => {
                           <div className="h-full w-full flex flex-col md:flex-row gap-0.5">
                             <div className="h-4/6 overflow-y-auto w-full md:w-1/2 md:h-full p-1 text-md rm-scrollbar">
                               <h2 className="text-md font-medium">
-                                {(() => {
-                                  const title = anime?.title;
-                                  return (
-                                    title?.english ||
-                                    title?.romaji ||
-                                    title?.native
-                                  );
-                                })()}
+                                {(() => title)()}
                               </h2>
                               <div className="text-sm grid grid-cols-1 w-full">
                                 <span className="italic">
@@ -171,22 +166,28 @@ const AnimeDetail: FC = () => {
                                   })}
                                 </span>
 
-                                <span className="italic relative text-nowrap w-full text-ellipsis line-clamp-1 inline gap-0.5 group-hover">
-                                  Tags:{" "}
-                                  {anime?.tags?.map((tag, idx) =>
-                                    idx + 1 === anime.tags?.length
-                                      ? tag.name
-                                      : tag.name + ", "
-                                  )}
-                                  <span className="absolute z-1 left-0 bg-emerald-600">
-                                    assaassa
+                                <div className="relative w-full group">
+                                  <span className="italic text-wrap w-full lg:text-ellipsis lg:line-clamp-1">
+                                    Tags:{" "}
+                                    {anime?.tags?.map((tag, idx) =>
+                                      idx + 1 === anime.tags?.length
+                                        ? tag.name
+                                        : tag.name + ", "
+                                    )}
                                   </span>
-                                </span>
+                                  <span className="absolute hidden lg:group-hover:block lg:group-hover:z-999 bg-neutral-950 bottom-full px-4 rounded-lg py-2 w-4/5 fade-in max-h-[120px] overflow-auto right-0  lg:hidden">
+                                    {anime?.tags?.map((tag, idx) =>
+                                      idx + 1 === anime.tags?.length
+                                        ? tag.name
+                                        : tag.name + ", "
+                                    )}
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                            <div className="w-full h-3/6 md:h-full md:w-1/2 p-1 overflow-hidden">
-                              <span className="font-medium">Synopsis: </span>
-                              <div className="h-8/10 overflow-auto p-1 block rm-scrollbar">
+                            <div className="w-full h-3/6 md:h-full md:w-1/2 overflow-hidden">
+                              <span className="font-medium">Synopsis</span>
+                              <div className="h-8/10 overflow-auto block pe-2 rm-scrollbar">
                                 <p
                                   className="size-full text-sm text-justify"
                                   ref={(node: HTMLParagraphElement) => {
@@ -206,17 +207,20 @@ const AnimeDetail: FC = () => {
             )}
 
             {isLoading && (
-              <div className="size-full p-1 h-[75vh] md:h-[65vh] flex flex-col items-end">
+              <div className="size-full p-1 h-[75vh] md:h-[65vh] bg-neutral-900 flex flex-col items-end">
                 <Link className="absolute z-1 size-10 left-1" to={"/anime"}>
                   <MoveLeft color="#1447e6" className="size-full" />
                 </Link>
-                <div className="!w-full !h-fit !aspect-14/3 bg-no-repeat bg-cover rounded-lg skeleton-text relative !overflow-visible">
-                  <div className="aspect-2/3 z-2 rounded-lg skeleton absolute top-[120%] md:top-1/2 left-2 h-[230px]"></div>
+                <div className="!w-full !h-fit !aspect-14/3 bg-no-repeat bg-cover rounded-lg skeleton-text !overflow-visible relative">
+                  <div className="aspect-2/3 z-1 rounded-lg absolute top-[120%] md:top-1/2 left-2 h-[230px]">
+                    <div className="size-full rounded-lg skeleton"></div>
+                    <div className="absolute -bottom-1 rounded-lg w-full h-8 skeleton"></div>
+                  </div>
                 </div>
 
-                <div className="size-full relative">
-                  <div className="h-full absolute z-1 grid w-full grid-cols-6 grid-rows-6 bg-neutral-950">
-                    <div className="col-span-3 row-span-1 col-start-1 col-end-4 row-start-6 md:col-start-3 lg:col-start-2 md:col-span-6 md:row-start-1 flex gap-x-0.5 items-center px-1 flex-wrap h-fit">
+                <div className="size-full relative bg-neutral-900">
+                  <div className="h-full absolute left-0 z-1 lg:left-[190px] right-0 grid grid-cols-6 grid-rows-7 ">
+                    <div className="col-span-3 absolute bottom-0 row-span-1 col-start-1 col-end-4 row-start-7 md:col-start-3 lg:col-start-2 md:relative md:col-span-6 md:row-start-1 flex gap-x-0.5 items-center px-1 flex-wrap h-fit">
                       <span className="skeleton-text h-5 w-12 rounded-full shrink-0"></span>
                       <span className="skeleton-text h-5 w-12 rounded-full shrink-0"></span>
                       <span className="skeleton-text h-5 w-12 rounded-full shrink-0"></span>
@@ -257,6 +261,10 @@ const AnimeDetail: FC = () => {
           </div>
         )}
       </section>
+
+      {title && (
+        <AnimeExtensionResult id={data?.data?.Media.idMal} title={title} />
+      )}
     </>
   );
 };

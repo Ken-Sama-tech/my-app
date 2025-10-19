@@ -1,30 +1,85 @@
 import type { ExtensionTypes } from "../../../server/models/types/Extensions";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
-import type { ExtensionsResponse } from "../../../server/models/types/Extensions";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type {
+  ExtensionsResponse,
+  ExtensionsSchema,
+} from "../../../server/models/types/Extensions";
+import useServerConfig from "./useServerConfig";
+import type { ObjectId } from "mongoose";
 
-type UseExtensions = (type?: ExtensionTypes | null) => {
-  data?: ExtensionsResponse[];
-  isError: boolean;
+export type GetExtensionsResponse = {
+  data: ExtensionsResponse[] | undefined;
   isLoading: boolean;
+  isError: boolean;
 };
 
-const useExtensions: UseExtensions = (type = null) => {
+export type UpdateExtensionResponse = {
+  isError: boolean;
+  isPending: boolean;
+  isSuccess: boolean;
+};
+
+type ExtensionFields = {
+  [K in keyof ExtensionsSchema]?: ExtensionsSchema[K];
+};
+
+type UpdateExtension = (
+  base: string,
+  id: ObjectId,
+  data: ExtensionFields
+) => UpdateExtensionResponse;
+
+type GetExtensions = (
+  base: string,
+  type: ExtensionTypes | null
+) => GetExtensionsResponse;
+
+type UseExtensions = (type?: ExtensionTypes | null) => {
+  getExtensions: () => GetExtensionsResponse;
+  updateExtension: (
+    id: ObjectId,
+    data: ExtensionFields
+  ) => UpdateExtensionResponse;
+};
+
+const getExtensions: GetExtensions = (base, type) => {
+  const qKeys = ["extensions"];
+
+  if (type) qKeys.push(type);
+
   const {
     data: extensions,
     isError,
     isLoading,
   } = useQuery({
-    queryKey: ["extensions"],
+    queryKey: qKeys,
     queryFn: () =>
       axios.get<ExtensionsResponse[]>(
-        `${import.meta.env.VITE_API_URL}/extensions${
-          type ? `?type=${type}` : ""
-        }`
+        `${base}/extensions${type ? `?type=${type}` : ""}`
       ),
   });
 
-  return { data: extensions?.data, isLoading, isError };
+  return { data: extensions?.data, isError, isLoading };
+};
+
+const updateExtension: UpdateExtension = (base, id, data) => {
+  const { isPending, isSuccess, isError } = useMutation({
+    mutationFn: () =>
+      axios.post(`${base}/extensions/update/${id}`, JSON.stringify(data)),
+  });
+
+  return { isPending, isSuccess, isError };
+};
+
+const useExtensions: UseExtensions = (type = null) => {
+  const serverConfig = useServerConfig();
+  const base = serverConfig.getServerUrl;
+
+  return {
+    getExtensions: () => getExtensions(base, type),
+    updateExtension: (id, data) => updateExtension(base, id, data),
+  };
 };
 
 export default useExtensions;

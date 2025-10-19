@@ -1,3 +1,5 @@
+import { AnimeExtensions } from "../../../server/models/types/Extensions";
+
 export type TranslationType = "sub" | "dub";
 
 export type Variables = {
@@ -91,6 +93,9 @@ export type LoadAnimeResponse = {
   readonly showId: string;
   readonly malId: number | string;
   readonly name: string;
+  readonly headers: {
+    Referer: string;
+  };
 };
 
 export type LoadAnime = (
@@ -113,5 +118,5 @@ export type LoadEpisode = (
 export type AllAnimeExtension = () => {
   readonly loadAnime: LoadAnime;
   readonly anime: Anime;
-  readonly name: string;
+  readonly name: AnimeExtensions;
 };
