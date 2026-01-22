@@ -1,4 +1,5 @@
-import express, { type Response, Request, Router } from "express";
+import express from "express";
+import type { Response, Request, Router } from "express";
 import axios from "axios";
 import { Readable } from "stream";
 

@@ -2,18 +2,7 @@
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.vite.json" },
     { "path": "./tsconfig.node.json" }
-  ],
-  "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "./dist/backend",
-    "types": ["node", "express", "dotenv"],
-    "moduleResolution": "bundler",
-    "target": "ES2023",
-    "declaration": true,
-    "lib": ["ES2023"],
-    "module": "ESNext"
-  },
-  "include": ["./extensions/**/**/*.ts", "./server/**/*ts"],
-  "exclude": ["dist", "node_modules"]
+  ]
 }

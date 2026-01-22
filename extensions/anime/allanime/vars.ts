@@ -1,4 +1,4 @@
-import { AllAnimeHeaders } from "./index.js";
+import type { AllAnimeHeaders } from "./index.js";
 
 export const baseURL = "https://api.allanime.day";
 

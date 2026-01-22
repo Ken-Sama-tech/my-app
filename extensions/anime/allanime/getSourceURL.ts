@@ -7,7 +7,7 @@ import type {
   GetSourceURLResponseData,
   Variables,
 } from "./index.js";
-import { AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 
 const getSourceURL = async (
   showId: string,

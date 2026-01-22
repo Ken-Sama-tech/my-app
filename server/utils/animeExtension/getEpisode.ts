@@ -86,7 +86,7 @@ const getEpisode: GetEpisode = async ({ idMal, title, episode }, options) => {
             if (!response) {
               episodes.push({
                 translationType,
-                currentEpisode: i,
+                episode: i,
                 html: "",
                 url: null,
                 error: true,

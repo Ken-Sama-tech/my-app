@@ -20,7 +20,7 @@ export type MediaFields = {
   readonly tags?: {
     readonly id?: number;
     readonly name?: string;
-    readonly description: ?string;
+    readonly description?: string;
   }[];
   readonly format?: string;
   readonly bannerImage?: string;

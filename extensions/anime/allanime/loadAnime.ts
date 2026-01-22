@@ -1,6 +1,6 @@
 import search from "./search.js";
 import Fuse from "fuse.js";
-import {
+import type {
   SearchResponseData,
   TranslationType,
   Anime,
@@ -25,6 +25,7 @@ const anime: Anime = async (title, idMal) => {
 
   if (idMal) {
     const res = data.find((a) => Number(a.malId) === idMal);
+
     anime.push(res);
   } else {
     const res = fuse.search(title).map((s) => s.item);
@@ -93,7 +94,7 @@ const loadAnime: LoadAnime = async (title, idMal = 0) => {
       const url = decodeHexString(hexedURL);
 
       return {
-        currentEpisode: validatedEp,
+        episode: validatedEp,
         translationType,
         url,
         html: `<video autoplay muted controls width="540" height="220" className="size-full"><source src="http://localhost:3000/proxy/player?url=${url}&referrer=${allAnimeHeaders.Referer}" type="video/mp4" /></video>`,

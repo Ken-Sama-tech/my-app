@@ -51,9 +51,9 @@ export type MediaArgs = {
 };
 
 export type ResponseData<T> = {
-  data?: T | null;
-  error?: boolean;
-  message?: string;
+  data: T;
+  error: boolean;
+  message: string;
 };
 
 export type PageInfo = {
@@ -101,6 +101,6 @@ export type Genres = {
     "Slice of Life",
     "Sports",
     "Supernatural",
-    "Thriller"
+    "Thriller",
   ];
 };

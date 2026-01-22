@@ -1,6 +1,6 @@
 import { useCallback, type FC } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type NonUndefinedGuard } from "@tanstack/react-query";
 import anilist from "../../lib/api/anilist/anilist";
 import MediaCard from "../../components/cards/MediaCard";
 import type { AnilistMediaQueryResponse } from "./types/anime";
@@ -11,6 +11,7 @@ import SimpleError from "../../components/ui/SimpleError";
 import { MoveLeft } from "lucide-react";
 import AddToLibraryToggle from "../../components/checkboxes/AddToLibrarytoggle";
 import AnimeExtensionResult from "../../features/Anime/components/AnimeExtensionResult";
+import ExtensionResult from "../../features/Anime/components/ExtensionResult";
 
 const queryData: string[] = [
   "id",
@@ -24,7 +25,6 @@ const queryData: string[] = [
   "format",
   "description",
   "bannerImage",
-  "updatedAt",
   "episodes",
   "duration",
   "nextAiringEpisode { timeUntilAiring }",
@@ -35,31 +35,31 @@ const media = (id: number) =>
     {
       id,
     },
-    queryData
+    queryData,
   );
 
 const AnimeDetail: FC = () => {
   const params = useParams();
+  const slug = params.slug;
   const id = Number(params.id);
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["anime", id],
+    queryKey: ["anime", id, slug],
     queryFn: () => media(id).query(),
   });
-  const titles = data?.data?.Media.title;
+
+  const titles = data?.data.Media.title;
   const title = titles?.romaji || titles?.english || titles?.native;
 
   const anime = data?.data?.Media;
+
   let durationTilNextEP = anime?.nextAiringEpisode?.timeUntilAiring || 0;
   const nextEpisodeRef = useCallback(
     (node: HTMLSpanElement) => {
       if (!node || !durationTilNextEP) return;
 
       let timer: number = window.setInterval(() => {
-        node.textContent = `Next episode in: ${formatDate(
-          durationTilNextEP,
-          "duration"
-        )}`;
+        node.textContent = formatDate(durationTilNextEP, "duration");
         durationTilNextEP--;
       }, 1000);
 
@@ -67,7 +67,7 @@ const AnimeDetail: FC = () => {
         clearInterval(timer);
       };
     },
-    [isLoading, durationTilNextEP]
+    [isLoading, durationTilNextEP],
   );
 
   return (
@@ -111,22 +111,22 @@ const AnimeDetail: FC = () => {
                     <div className="absolute w-fit h-full md:right-0 md:left-[190px]">
                       <div className="size-full relative grid grid-cols-6 grid-rows-7 items-start">
                         <div className="w-full absolute bottom-2 flex gap-1 py-0.5 flex-wrap md:flex-nowrap md:overflow-x-auto col-span-4 col-start-1 row-span-2 col-end-4 row-start-7 row-end-7 md:col-span-7 md:col-start-1 md:relative md:bottom-0 md:row-span-1 md:row-start-1 rm-scrollbar sm:col-end-3">
-                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                          <Badge className="px-2! py-0.5! shrink text-sm h-fit text-nowrap grow-0">
                             {"Score: " +
                               (Number(anime?.meanScore) * 0.1).toFixed(1) || 0}
                           </Badge>
-                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                          <Badge className="px-2! py-0.5! shrink text-sm h-fit text-nowrap grow-0">
                             {"Eps: " + (anime?.episodes || "??")}
                           </Badge>
-                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                          <Badge className="px-2! py-0.5! shrink text-sm h-fit text-nowrap grow-0">
                             {anime?.format || "format??"}
                           </Badge>
-                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                          <Badge className="px-2! py-0.5! shrink text-sm h-fit text-nowrap grow-0">
                             {anime?.duration
                               ? anime.duration + " mins"
                               : "duration??"}
                           </Badge>
-                          <Badge className="!px-2 !py-0.5 shrink text-sm h-fit text-nowrap grow-0">
+                          <Badge className="px-2! py-0.5! shrink text-sm h-fit text-nowrap grow-0">
                             {anime?.status || "unknown"}
                           </Badge>
                         </div>
@@ -144,11 +144,8 @@ const AnimeDetail: FC = () => {
                                   Native: {anime?.title.native}
                                 </span>
                                 <span className="italic">
-                                  Updated at:{" "}
-                                  {formatDate(anime?.updatedAt || 0)}
-                                </span>
-                                <span className="italic" ref={nextEpisodeRef}>
-                                  Next episode at: 00:00:00:00
+                                  Next episode in{" "}
+                                  <span ref={nextEpisodeRef}>00:00:00:00</span>
                                 </span>
                                 <span className="italic text-wrap flex flex-wrap shrink-0 gap-1">
                                   Genres:
@@ -167,19 +164,19 @@ const AnimeDetail: FC = () => {
                                 </span>
 
                                 <div className="relative w-full group">
-                                  <span className="italic text-wrap w-full lg:text-ellipsis lg:line-clamp-1">
+                                  <span className="italic text-wrap w-full lg:text-ellipsis lg:line-clamp-2">
                                     Tags:{" "}
                                     {anime?.tags?.map((tag, idx) =>
                                       idx + 1 === anime.tags?.length
                                         ? tag.name
-                                        : tag.name + ", "
+                                        : tag.name + ", ",
                                     )}
                                   </span>
                                   <span className="absolute hidden lg:group-hover:block lg:group-hover:z-999 bg-neutral-950 bottom-full px-4 rounded-lg py-2 w-4/5 fade-in max-h-[120px] overflow-auto right-0  lg:hidden">
                                     {anime?.tags?.map((tag, idx) =>
                                       idx + 1 === anime.tags?.length
                                         ? tag.name
-                                        : tag.name + ", "
+                                        : tag.name + ", ",
                                     )}
                                   </span>
                                 </div>
@@ -211,7 +208,7 @@ const AnimeDetail: FC = () => {
                 <Link className="absolute z-1 size-10 left-1" to={"/anime"}>
                   <MoveLeft color="#1447e6" className="size-full" />
                 </Link>
-                <div className="!w-full !h-fit !aspect-14/3 bg-no-repeat bg-cover rounded-lg skeleton-text !overflow-visible relative">
+                <div className="w-full! h-fit! aspect-14/3! bg-no-repeat bg-cover rounded-lg skeleton-text overflow-visible! relative">
                   <div className="aspect-2/3 z-1 rounded-lg absolute top-[120%] md:top-1/2 left-2 h-[230px]">
                     <div className="size-full rounded-lg skeleton"></div>
                     <div className="absolute -bottom-1 rounded-lg w-full h-8 skeleton"></div>
@@ -264,6 +261,10 @@ const AnimeDetail: FC = () => {
 
       {title && (
         <AnimeExtensionResult id={data?.data?.Media.idMal} title={title} />
+      )}
+
+      {title && (
+        <ExtensionResult title={title} idMal={data?.data?.Media.idMal} />
       )}
     </>
   );

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ExtensionsSchema } from "./types/Extensions";
+import type { ExtensionsSchema } from "./types/Extensions";
 
 const extensionsSchema = new mongoose.Schema<ExtensionsSchema>({
   name: {

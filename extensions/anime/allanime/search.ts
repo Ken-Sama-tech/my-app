@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import { allAnimeHeaders, baseURL as base } from "./vars.js";
-import {
+import type {
   AllAnimeResponse,
   AllAnimeSearchVariables,
   AllAnimeSearchResponse,
@@ -72,7 +72,7 @@ const search = async (
     const { data } = res.data;
 
     return {
-      data: data.shows.edges,
+      data: data?.shows.edges,
       message: "Found Result",
       status: 200,
     };

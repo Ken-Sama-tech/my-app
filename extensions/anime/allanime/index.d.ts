@@ -104,7 +104,7 @@ export type LoadAnime = (
 ) => Promise<LoadAnimeResponse>;
 
 export type LoadEpisodeResponse = {
-  readonly currentEpisode: number;
+  readonly episode: number;
   readonly translationType: TranslationType;
   readonly url: string;
   readonly html: string;

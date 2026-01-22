@@ -21,7 +21,7 @@ const SliderCarousel: FC<SliderCarouselProps> = ({
         </SubHeading>
         <Link
           to={url}
-          className="!text-blue-600 flex hover:opacity-90 hover:underline transition-opacity duration-200 ease-in"
+          className="text-blue-600! flex hover:opacity-90 hover:underline transition-opacity duration-200 ease-in"
         >
           View
         </Link>
@@ -38,10 +38,11 @@ const SliderCarousel: FC<SliderCarouselProps> = ({
       <button
         onClick={() => {
           if (!sliderRef.current) return;
+          const coordinate: number = -200;
           const slider: HTMLDivElement = sliderRef.current;
           slider.scrollBy({
             behavior: "smooth",
-            left: -200,
+            left: coordinate,
           });
         }}
         className="size-10 bg-[rgba(81,162,255,0.2)] cursor-pointer left-0 flex justify-center items-center absolute rounded-full top-1/2 -translate-y-1/2"
@@ -51,10 +52,11 @@ const SliderCarousel: FC<SliderCarouselProps> = ({
       <button
         onClick={() => {
           if (!sliderRef.current) return;
+          const coordinate: number = 200;
           const slider: HTMLDivElement = sliderRef.current;
           slider.scrollBy({
             behavior: "smooth",
-            left: 200,
+            left: coordinate,
           });
         }}
         className="size-10 bg-[rgba(81,162,255,0.2)] cursor-pointer right-0 flex justify-center items-center absolute rounded-full top-1/2 -translate-y-1/2"

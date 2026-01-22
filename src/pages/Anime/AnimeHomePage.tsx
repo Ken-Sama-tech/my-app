@@ -49,15 +49,15 @@ const AnimeHomePage: FC = () => {
     queryKey: ["top-anime"],
   });
 
-  console.log(trendingAnimeHasError);
-
   return (
     <>
       <div className="flex overflow-auto flex-wrap gap-10 rm-scrollbar p-5">
         <SliderCarousel heading="Trending Anime" url="/anime/trending">
-          {isTrendingAnimeLoading &&
+          {(isTrendingAnimeLoading || trendingAnimeHasError) &&
             Array.from({ length: 20 }, (_, idx) => {
-              return <MediaCard snap key={idx} />;
+              return (
+                <MediaCard snap key={idx} isError={trendingAnimeHasError} />
+              );
             })}
           {!isTrendingAnimeLoading &&
             !trendingAnimeHasError &&
@@ -76,7 +76,6 @@ const AnimeHomePage: FC = () => {
                     score={item.meanScore}
                     format={item.format}
                     status={item.status}
-                    isError={trendingAnimeHasError}
                     snap
                     isLoading={false}
                     src={item.coverImage?.extraLarge}
@@ -87,11 +86,14 @@ const AnimeHomePage: FC = () => {
             })}
         </SliderCarousel>
         <SliderCarousel heading="Popular Anime" url="/anime/popular">
-          {isPopularAnimeLoading &&
+          {(isPopularAnimeLoading || popularAnimeHasError) &&
             Array.from({ length: 20 }, (_, idx) => {
-              return <MediaCard snap key={idx} />;
+              return (
+                <MediaCard snap key={idx} isError={popularAnimeHasError} />
+              );
             })}
           {!isPopularAnimeLoading &&
+            !popularAnimeHasError &&
             popularAnime?.data?.Page.media.map((item) => {
               const { romaji, english, native } = item.title;
               return (
@@ -107,7 +109,6 @@ const AnimeHomePage: FC = () => {
                     format={item.format}
                     status={item.status}
                     snap
-                    isError={popularAnimeHasError}
                     isLoading={false}
                     src={item.coverImage?.extraLarge}
                     title={english || romaji || native}
@@ -117,11 +118,12 @@ const AnimeHomePage: FC = () => {
             })}
         </SliderCarousel>
         <SliderCarousel heading="Top Anime" url="/anime/top">
-          {isTopAnimeLoading &&
+          {(isTopAnimeLoading || topAnimeHasError) &&
             Array.from({ length: 20 }, (_, idx) => {
-              return <MediaCard snap key={idx} />;
+              return <MediaCard snap key={idx} isError={topAnimeHasError} />;
             })}
           {!isTopAnimeLoading &&
+            !topAnimeHasError &&
             topAnime?.data?.Page.media.map((item) => {
               const { romaji, english, native } = item.title;
               return (
@@ -137,7 +139,6 @@ const AnimeHomePage: FC = () => {
                     format={item.format}
                     status={item.status}
                     snap
-                    isError={topAnimeHasError}
                     isLoading={false}
                     src={item.coverImage?.extraLarge}
                     title={english || romaji || native}

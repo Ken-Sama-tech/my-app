@@ -42,45 +42,54 @@
 .dim {
   position: relative;
   overflow: hidden;
+
+  &::after {
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
 }
 
 .absolute-center {
   @apply absolute top-1/2 left-1/2 -translate-1/2;
 }
 
-.dim::after {
-  content: " ";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
 .skeleton {
   position: relative;
   overflow: hidden;
   background: var(--color-neutral-800);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: skeleton-shimmer 1.2s infinite;
+  }
 }
 
-.skeleton::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
-  animation: skeleton-shimmer 1.2s infinite;
+.spinner {
+  @apply content-[''] absolute border-t-blue-700 border-4 size-10 top-1/2 left-1/2 -translate-1/2 rounded-full;
+  animation: spin linear infinite 0.8s;
 }
 
 .tooltip-bottom {
-  @apply absolute top-full mt-2 bg-neutral-700 py-1.5 pointer-events-none hidden group-hover:block group-active:block rounded-lg px-2 left-0 before:content-[''] before:absolute before:size-3 before:border-transparent before:border-6 before:border-b-neutral-700 before:left-1/2 before:-translate-x-1/2 before:bottom-full z-1;
+  @apply absolute top-full mt-2 bg-neutral-700 py-1.5 pointer-events-none hidden group-hover:block group-active:block rounded-lg px-2 left-0;
   animation: fade-in 0.5s;
+
+  &::before {
+    @apply content-[''] absolute size-3 border-transparent border-6 border-b-neutral-700 left-1/2 -translate-x-1/2 bottom-full z-1;
+  }
 }
 
 .skeleton-text {
