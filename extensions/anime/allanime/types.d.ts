@@ -1,5 +1,3 @@
-import getEpisode from "../../../server/utils/animeExtension/getEpisode";
-
 type AllowAdult = boolean;
 
 type AllowUnknown = boolean;
@@ -71,6 +69,14 @@ export type SearchResponse = {
   readonly data: {
     readonly shows: {
       readonly edges: SearchReponseFields[];
+    };
+  };
+};
+
+export type GetEpisodeListResponse = {
+  readonly data: {
+    show: {
+      availableEpisodes: AvailableEpisodes;
     };
   };
 };

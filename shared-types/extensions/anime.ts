@@ -2,7 +2,7 @@ type DubTranslation = "Eng" | "Chi" | "Jap";
 
 type SubTranslation = "Eng";
 
-export type Extensions = "allanime" | "bato.to" | "hentai haven";
+export type AnimeExtensions = "allanime" | "bato.to" | "hentai haven";
 
 export type Translation = "sub" | "dub";
 
@@ -13,21 +13,26 @@ export type Source = {
   url: string;
 };
 
+export type EpisodeList = {
+  episodeTitle: string;
+  episode: number;
+};
+
 export type MalId = number;
 
 export type Id = number | string;
 
 export type Dub = {
   lang: DubTranslation;
-  availableEpisodes: number;
+  episodes: number;
 };
 
 export type Sub = {
   lang: SubTranslation;
-  availableEpisodes: number;
+  episodes: number;
 };
 
-export type Episodes = {
-  subs: Sub[];
-  dubs: Dub[];
-};
+// export type Episodes = {
+//   subs: Sub[];
+//   dubs: Dub[];
+// };

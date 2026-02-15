@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "strict": true,
     "rootDir": ".",
     "outDir": "./dist/backend",
     "types": ["node", "express", "dotenv"],
@@ -11,8 +10,20 @@
     "composite": true,
     // "noEmit": true,
     "lib": ["ES2023"],
-    "module": "ESNext"
+    "module": "ESNext",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
   },
-  "include": ["./extensions/**/**/*.ts", "./server/**/*ts"],
+  "include": [
+    "./extensions/**/*.ts",
+    "./extensions/**/**/*.ts",
+    "./server/**/*ts",
+    "./shared-types/**/*ts"
+  ],
   "exclude": ["dist", "node_modules"]
 }

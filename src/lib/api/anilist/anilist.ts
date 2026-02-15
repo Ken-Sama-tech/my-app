@@ -1,20 +1,117 @@
 import axios, { type AxiosResponse } from "axios";
-import type {
-  MediaArgs,
-  ResponseData,
-  PageArgs,
-  MediaResponse,
-  PageResponse,
-  Genres,
-} from "./types/anilist";
+
+export type MediaType = "MANGA" | "ANIME";
+
+export type MediaSort =
+  | "ID"
+  | "ID_DESC"
+  | "TITLE_ROMAJI"
+  | "TITLE_ROMAJI_DESC"
+  | "TITLE_ENGLISH"
+  | "TITLE_ENGLISH_DESC"
+  | "TITLE_NATIVE"
+  | "TITLE_NATIVE_DESC"
+  | "TYPE"
+  | "TYPE_DESC"
+  | "FORMAT"
+  | "FORMAT_DESC"
+  | "START_DATE"
+  | "START_DATE_DESC"
+  | "END_DATE"
+  | "END_DATE_DESC"
+  | "SCORE"
+  | "SCORE_DESC"
+  | "POPULARITY"
+  | "POPULARITY_DESC"
+  | "TRENDING"
+  | "TRENDING_DESC"
+  | "EPISODES"
+  | "EPISODES_DESC"
+  | "DURATION"
+  | "DURATION_DESC"
+  | "STATUS"
+  | "STATUS_DESC"
+  | "CHAPTERS"
+  | "CHAPTERS_DESC"
+  | "VOLUMES"
+  | "VOLUMES_DESC"
+  | "UPDATED_AT"
+  | "UPDATED_AT_DESC"
+  | "SEARCH_MATCH"
+  | "FAVOURITES"
+  | "FAVOURITES_DESC";
+
+export type MediaArgs = {
+  search?: string | "";
+  id?: number | null;
+  idMal?: number;
+  type?: MediaType;
+  sort?: MediaSort | MediaSort[] | null;
+  isAdult?: boolean;
+};
+
+export type ResponseData<T> = {
+  data?: T;
+  error: boolean;
+  message: string;
+};
+
+export type PageInfo = {
+  currentPage: number;
+  hasNextPage: boolean;
+  lastPage: number;
+  perPage: number;
+  total: number;
+};
+
+export type PageArgs = {
+  page?: number;
+  perPage?: number;
+};
+
+export type MediaResponse<T> = {
+  gql: string;
+  mediaQuery: string;
+  variables: MediaArgs;
+  queryArgs: string[];
+  query: () => Promise<ResponseData<T>>;
+};
+
+export type PageResponse<T> = {
+  media: (args: MediaArgs, data: string[]) => MediaResponse<T>;
+};
+
+export type Genres = {
+  GenreCollection: [
+    "Action",
+    "Adventure",
+    "Comedy",
+    "Drama",
+    "Ecchi",
+    "Fantasy",
+    "Hentai",
+    "Horror",
+    "Mahou Shoujo",
+    "Mecha",
+    "Music",
+    "Mystery",
+    "Psychological",
+    "Romance",
+    "Sci-Fi",
+    "Slice of Life",
+    "Sports",
+    "Supernatural",
+    "Thriller",
+  ];
+};
 
 const anilist = () => {
   const api: string = "https://graphql.anilist.co";
 
   return {
-    query: async <TData, TVars>(
+    query: async <TData = null, TVars = null>(
       gql: string,
-      variables: TVars | object
+      variables: TVars | object,
     ): Promise<ResponseData<TData>> => {
       try {
         const res = await axios.post<AxiosResponse<TData>>(api, {
@@ -30,11 +127,14 @@ const anilist = () => {
 
         return {
           data,
+          error: false,
+          message: "success",
         };
       } catch (error: any) {
+        const eMessage: any = error?.response?.data?.errors;
         return {
           error: true,
-          message: error || error.message,
+          message: eMessage || error.message || error,
         };
       }
     },
@@ -42,7 +142,7 @@ const anilist = () => {
     media: <T>(
       args: MediaArgs,
       data: string[],
-      isPaginated: boolean = false
+      isPaginated: boolean = false,
     ): MediaResponse<T> => {
       const {
         search = "",
@@ -110,7 +210,7 @@ const anilist = () => {
       };
     },
 
-    Page: <T>({
+    page: <T>({
       page = 1,
       perPage = 10,
       pageInfo = false,
@@ -123,7 +223,7 @@ const anilist = () => {
 
       const q = (mediaQuery: string, queryArgs: string[]) =>
         `query($page: Int, $perPage: Int,${queryArgs.map(
-          (a) => " " + a
+          (a) => " " + a,
         )} ) { Page(page: $page, perPage: $perPage) { ${mediaQuery} ${includePageInfo}} }`;
 
       return {
@@ -151,27 +251,29 @@ const anilist = () => {
       };
     },
 
-    genres: async (): Promise<ResponseData<Genres>> => {
-      const self = anilist();
-      const genres = await self.query<Genres, {}>(
-        `query{ GenreCollection }`,
-        {}
-      );
+    // genres: async (): Promise<ResponseData<GetGenresResponse>> => {
+    //   const self = anilist();
+    //   const genres = await self.query<GetGenresResponse, null>(
+    //     `query{ GenreCollection }`,
+    //     null,
+    //   );
 
-      const { data, error, message } = genres;
+    //   const { data, error, message } = genres;
 
-      if (error) {
-        return {
-          error,
-          message,
-        };
-      }
+    //   if (error) {
+    //     return {
+    //       data,
+    //       error,
+    //       message,
+    //     };
+    //   }
 
-      return {
-        data,
-        message,
-      };
-    },
+    //   return {
+    //     data,
+    //     message,
+    //     error,
+    //   };
+    // },
   };
 };
 

@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
-import type { ExtensionsSchema } from "./types/Extensions";
+import { Schema, model } from "mongoose";
+import type { ExtensionsSchema } from "../../shared-types/extensions";
 
-const extensionsSchema = new mongoose.Schema<ExtensionsSchema>({
+const extensionsSchema = new Schema<ExtensionsSchema>({
   name: {
     type: String,
     required: true,
@@ -27,9 +27,6 @@ const extensionsSchema = new mongoose.Schema<ExtensionsSchema>({
 
 extensionsSchema.index({ type: 1, active: 1, name: -1 });
 
-const Extensions = mongoose.model<ExtensionsSchema>(
-  "Extension",
-  extensionsSchema
-);
+const Extensions = model<ExtensionsSchema>("Extension", extensionsSchema);
 
 export default Extensions;

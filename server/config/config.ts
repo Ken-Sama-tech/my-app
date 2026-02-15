@@ -4,7 +4,7 @@ import path from "path";
 
 dotenv.config({
   path: path.resolve(
-    "C:\\Users\\Admin\\OneDrive\\Desktop\\projects\\my-app\\.env"
+    "C:\\Users\\Admin\\OneDrive\\Desktop\\projects\\my-app\\.env",
   ),
 });
 
@@ -16,7 +16,7 @@ const conn: Conn = async () => {
 
     await mongoose.connect(process.env.URI!);
     console.log("Connected to the database");
-  } catch (error) {
+  } catch (error: any) {
     console.error(error.message);
     process.exit(1);
   }

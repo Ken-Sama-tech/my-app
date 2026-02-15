@@ -1,29 +1,31 @@
 import express from "express";
 import type { Router } from "express";
 
+const router: Router = express.Router();
+//extensions --------------------------------
 import {
   getExtensions,
-  updateExtension,
-  getExtension,
-  findAnime,
-  fetchEpisodes,
-} from "../controllers/extensionsController.js";
-
-const router: Router = express.Router();
+  updateExtensions,
+} from "../controllers/extensions.controller.js";
 
 router.get("/", getExtensions);
-router.get("/:id", getExtension);
-router.patch("/update/:id", updateExtension);
-router.get("/anime/search", findAnime);
-router.get("/anime/episodes", fetchEpisodes);
+router.patch("/update/:id", updateExtensions);
 
-//refactored
+//anime extensions --------------------------
 import {
   searchAnime,
+  getTranslations,
+  getEpisodeList,
   getEpisode,
-} from "../controllers/extensionController(ref).js";
+} from "../controllers/animeExtension.controller.js";
 
-router.get("/anime/search/ref", searchAnime);
-router.get("/anime/episodes/ref", getEpisode);
+router.get("/anime/search", searchAnime);
+router.get("/anime/translations", getTranslations);
+router.get("/anime/episodes", getEpisodeList);
+router.get("/anime/episode", getEpisode);
+
+//manga extensions --------------------------
+
+//novel extensions --------------------------
 
 export default router;

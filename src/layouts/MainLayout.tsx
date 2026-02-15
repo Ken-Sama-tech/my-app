@@ -8,7 +8,7 @@ const MainLayout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="h-dvh w-full flex flex-col shrink-0 grow-0">
-      <div className="h-[30px] bg-neutral-800 w-full flex items-center px-2 shadow-xl z-99">
+      <div className="h-7.5 bg-neutral-800 w-full flex items-center px-2 shadow-xl z-99">
         <button
           type="button"
           className="size-7 cursor-pointer md:hidden"

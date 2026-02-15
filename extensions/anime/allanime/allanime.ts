@@ -4,13 +4,22 @@ import type {
   SearchResponse,
   GetEpisodeLink,
   GetEpisodeLinkResponse,
+  GetEpisodeList,
+  GetEpisodeListResponse,
+  GetTranslations,
+  GetTranslationsResponse,
 } from "../base";
-import { searchQuery, getEpisodeLinkQuery } from "./vars.js";
+import {
+  searchQuery,
+  getEpisodeLinkQuery,
+  getEpisodeListQuery,
+} from "./vars.js";
 import type {
   SearhVariables,
   GetEpisodeLinkVariables,
   SearchResponse as AllAnimeSearchResponse,
   GetEpisodeLinkResponse as AllAnimeSourceUrls,
+  GetEpisodeListResponse as AllAnimeEpisodeList,
 } from "./types";
 import { hexDecoder } from "./utils.js";
 import axios from "axios";
@@ -57,38 +66,18 @@ const allanime: Base = () => {
         payload: {
           extension: name,
           results: data.shows.edges.map((anime) => {
-            const {
-              name,
-              altNames = [],
-              malId,
-              _id,
-              availableEpisodes,
-            } = anime;
+            const { name, altNames = [], malId, _id } = anime;
 
             return {
               title: name,
               alternatives: altNames,
               malId: Number(malId),
               id: _id,
-              episodes: {
-                subs: [
-                  {
-                    lang: "Eng",
-                    availableEpisodes: availableEpisodes?.sub || 0,
-                  },
-                ],
-                dubs: [
-                  {
-                    lang: "Eng",
-                    availableEpisodes: availableEpisodes?.dub || 0,
-                  },
-                ],
-              },
             };
           }),
         },
         error: false,
-        message: `${data?.shows?.edges.length} results found`,
+        message: `${data?.shows?.edges.length} result/s found`,
         status: 200,
       };
     } catch (e: any) {
@@ -98,8 +87,113 @@ const allanime: Base = () => {
           extension: name,
         },
         error: true,
-        message: e.message || "Bad request",
-        status: e.status || 400,
+        message: e?.message || e,
+        status: e?.status || 400,
+      };
+    }
+  };
+
+  const getEpisodeList: GetEpisodeList = async (
+    id,
+    { translation = "sub" } = {},
+  ): Promise<GetEpisodeListResponse> => {
+    try {
+      const response = await axios.get<AllAnimeEpisodeList>(api, {
+        params: {
+          query: getEpisodeListQuery,
+          variables: JSON.stringify({
+            showId: id,
+          }),
+        },
+        headers,
+      });
+
+      const { data } = response.data;
+
+      const episodes = data.show.availableEpisodes[translation];
+
+      const episodeList = Array.from({ length: episodes }, (_, i) => {
+        const e = i + 1;
+        return {
+          episodeTitle: `Episode ${e}`,
+          episode: e,
+        };
+      });
+
+      return {
+        payload: {
+          extension: name,
+          id: id,
+          translation,
+          language: "Eng",
+          episodeList,
+        },
+        message: "success",
+        error: false,
+        status: 200,
+      };
+    } catch (e: any) {
+      return {
+        payload: {
+          extension: name,
+          id: id,
+          translation,
+          language: "Eng",
+          episodeList: [],
+        },
+        error: true,
+        message: e?.message || e,
+        status: e?.status || 500,
+      };
+    }
+  };
+
+  const getTranslations: GetTranslations = async (
+    id,
+  ): Promise<GetTranslationsResponse> => {
+    try {
+      const response = await axios.get<AllAnimeEpisodeList>(api, {
+        params: {
+          query: getEpisodeListQuery,
+          variables: {
+            showId: id,
+          },
+        },
+        headers,
+      });
+
+      const { data } = response.data;
+
+      const episodes = data.show.availableEpisodes;
+
+      return {
+        payload: {
+          extension: name,
+          subs: [
+            {
+              lang: "Eng",
+              episodes: episodes.sub,
+            },
+          ],
+          dubs: [
+            {
+              lang: "Eng",
+              episodes: episodes.dub,
+            },
+          ],
+        },
+        error: false,
+        message: "success",
+        status: 200,
+      };
+    } catch (e: any) {
+      return {
+        payload: {
+          extension: name,
+        },
+        error: true,
+        message: e?.message || e,
+        status: 400,
       };
     }
   };
@@ -141,9 +235,11 @@ const allanime: Base = () => {
       return {
         payload: {
           extension: name,
+          referrer: headers.Referer,
           lang: "Eng",
           episode,
           translation,
+          episodeTitle: `Episode ${episode}`,
           sources: [
             ...players.map((source) => {
               return {
@@ -153,7 +249,7 @@ const allanime: Base = () => {
             }),
           ],
         },
-        message: "Result Found",
+        message: "success",
         status: 200,
         error: false,
       };
@@ -162,13 +258,15 @@ const allanime: Base = () => {
         payload: {
           sources: [],
           episode,
+          episodeTitle: "",
           translation,
           lang: "Eng",
           extension: name,
+          referrer: headers.Referer,
         },
         message: e.message || e,
         error: true,
-        status: e.status,
+        status: e?.status || 400,
       };
     }
   };
@@ -177,6 +275,8 @@ const allanime: Base = () => {
     extension: name,
     referrer: headers.Referer,
     search,
+    getEpisodeList,
+    getTranslations,
     getEpisodeLink,
   };
 };

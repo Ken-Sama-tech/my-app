@@ -30,20 +30,20 @@ const MediaCard: FC<MediaCardProps> = ({
             >
               <div className="relative z-0 flex size-full">
                 <div
-                  className={`w-[0px] h-full ${
+                  className={`w-0 h-full ${
                     effects
                       ? "group-hover:w-full bg-[rgba(0,0,0,0.5)]"
                       : "hidden"
-                  } duration-200 transition-[width] ease-in -z-0 absolute p-1 group-hover:z-1 flex flex-col justify-start gap-1 overflow-hidden`}
+                  } duration-200 transition-[width] ease-in z-0 absolute p-1 group-hover:z-1 flex flex-col justify-start gap-1 overflow-hidden`}
                 >
                   <div className="w-full gap-0.5 flex">
-                    <div className="group-hover:opacity-100 duration-200 opacity-0 text-sm rounded-lg -z-0 transition-all hidden group-hover:block !bg-green-500 flex-wrap px-2">
+                    <div className="group-hover:opacity-100 duration-200 opacity-0 text-sm rounded-lg z-0 transition-all hidden group-hover:block bg-green-500! flex-wrap px-2">
                       {status}
                     </div>
-                    <div className="group-hover:opacity-100 duration-200 opacity-0 text-sm px-2 rounded-lg -z-0 transition-all hidden group-hover:block bg-blue-500">
+                    <div className="group-hover:opacity-100 duration-200 opacity-0 text-sm px-2 rounded-lg z-0 transition-all hidden group-hover:block bg-blue-500">
                       {format}
                     </div>
-                    <div className="group-hover:opacity-100 duration-200 opacity-0 text-sm px-2 rounded-lg -z-0 transition-all hidden group-hover:block bg-yellow-500">
+                    <div className="group-hover:opacity-100 duration-200 opacity-0 text-sm px-2 rounded-lg z-0 transition-all hidden group-hover:block bg-yellow-500">
                       {score ? (score * 0.1).toFixed(1) : score}
                     </div>
                   </div>
@@ -71,7 +71,7 @@ const MediaCard: FC<MediaCardProps> = ({
                   style={{ backgroundImage: `url(${src})` }}
                 ></div>
                 <div className="absolute w-full h-auto bottom-0 flex overflow-hidden p-0.5">
-                  <span className="w-full text-center tex font-medium text-lg">
+                  <span className="w-full text-center tex font-medium text-lg select-none">
                     {effects && title}
                   </span>
                 </div>
@@ -86,8 +86,8 @@ const MediaCard: FC<MediaCardProps> = ({
                 snap ? snapPosition : ""
               }`}
             >
-              <span className="w-10/11 skeleton skeleton-text !py-2"></span>
-              <span className="w-8/10 skeleton skeleton-text !py-2"></span>
+              <span className="w-10/11 skeleton skeleton-text py-2!"></span>
+              <span className="w-8/10 skeleton skeleton-text py-2!"></span>
             </div>
           )}
         </>

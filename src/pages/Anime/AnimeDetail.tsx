@@ -1,6 +1,6 @@
-import { useCallback, type FC } from "react";
+import { useCallback, useEffect, type FC } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery, type NonUndefinedGuard } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import anilist from "../../lib/api/anilist/anilist";
 import MediaCard from "../../components/cards/MediaCard";
 import type { AnilistMediaQueryResponse } from "./types/anime";
@@ -10,8 +10,8 @@ import formatDate from "../../lib/utils/formatDate";
 import SimpleError from "../../components/ui/SimpleError";
 import { MoveLeft } from "lucide-react";
 import AddToLibraryToggle from "../../components/checkboxes/AddToLibrarytoggle";
-import AnimeExtensionResult from "../../features/Anime/components/AnimeExtensionResult";
-import ExtensionResult from "../../features/Anime/components/ExtensionResult";
+import AnimeExtensionsResults from "../../features/Anime/components/AnimeExtensionsResults";
+import slugify from "../../lib/utils/slugify";
 
 const queryData: string[] = [
   "id",
@@ -38,22 +38,42 @@ const media = (id: number) =>
     queryData,
   );
 
+type AnimeDetailParams = {
+  readonly slug: string;
+  readonly id: string;
+};
+
 const AnimeDetail: FC = () => {
-  const params = useParams();
+  const params = useParams<AnimeDetailParams>();
   const slug = params.slug;
   const id = Number(params.id);
 
-  const { data, isError, isLoading } = useQuery({
+  const {
+    data: mediaQuery,
+    isError,
+    isLoading,
+  } = useQuery({
     queryKey: ["anime", id, slug],
     queryFn: () => media(id).query(),
   });
 
-  const titles = data?.data.Media.title;
-  const title = titles?.romaji || titles?.english || titles?.native;
+  const { data } = mediaQuery || {};
 
-  const anime = data?.data?.Media;
+  const titles = data?.Media.title;
+  const title = titles?.romaji || titles?.english || titles?.native;
+  const idMal = data?.Media.idMal;
+
+  useEffect(() => {
+    if (!slug && title) {
+      // window.history.replaceState(null, "", `/anime/${id}/${slugify(title)}`);
+      window.location.href = `/anime/${id}/${slugify(title)}`;
+    }
+  }, [title]);
+
+  const anime = data?.Media;
 
   let durationTilNextEP = anime?.nextAiringEpisode?.timeUntilAiring || 0;
+
   const nextEpisodeRef = useCallback(
     (node: HTMLSpanElement) => {
       if (!node || !durationTilNextEP) return;
@@ -108,7 +128,7 @@ const AnimeDetail: FC = () => {
                     </Link>
                   </div>
                   <div className="relative size-full">
-                    <div className="absolute w-fit h-full md:right-0 md:left-[190px]">
+                    <div className="absolute w-fit h-full md:right-0 md:left-47.5">
                       <div className="size-full relative grid grid-cols-6 grid-rows-7 items-start">
                         <div className="w-full absolute bottom-2 flex gap-1 py-0.5 flex-wrap md:flex-nowrap md:overflow-x-auto col-span-4 col-start-1 row-span-2 col-end-4 row-start-7 row-end-7 md:col-span-7 md:col-start-1 md:relative md:bottom-0 md:row-span-1 md:row-start-1 rm-scrollbar sm:col-end-3">
                           <Badge className="px-2! py-0.5! shrink text-sm h-fit text-nowrap grow-0">
@@ -172,13 +192,15 @@ const AnimeDetail: FC = () => {
                                         : tag.name + ", ",
                                     )}
                                   </span>
-                                  <span className="absolute hidden lg:group-hover:block lg:group-hover:z-999 bg-neutral-950 bottom-full px-4 rounded-lg py-2 w-4/5 fade-in max-h-[120px] overflow-auto right-0  lg:hidden">
-                                    {anime?.tags?.map((tag, idx) =>
-                                      idx + 1 === anime.tags?.length
-                                        ? tag.name
-                                        : tag.name + ", ",
-                                    )}
-                                  </span>
+                                  <div className="absolute hidden lg:group-hover:block lg:group-hover:z-999 bg-neutral-950 bottom-full px-4 py-2 rounded-lg w-4/5 fade-in max-h-25 overflow-auto right-0 lg:hidden">
+                                    <span className="size-full">
+                                      {anime?.tags?.map((tag, idx) =>
+                                        idx + 1 === anime.tags?.length
+                                          ? tag.name
+                                          : tag.name + ", ",
+                                      )}
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -209,14 +231,14 @@ const AnimeDetail: FC = () => {
                   <MoveLeft color="#1447e6" className="size-full" />
                 </Link>
                 <div className="w-full! h-fit! aspect-14/3! bg-no-repeat bg-cover rounded-lg skeleton-text overflow-visible! relative">
-                  <div className="aspect-2/3 z-1 rounded-lg absolute top-[120%] md:top-1/2 left-2 h-[230px]">
+                  <div className="aspect-2/3 z-1 rounded-lg absolute top-[120%] md:top-1/2 left-2 h-57.5">
                     <div className="size-full rounded-lg skeleton"></div>
                     <div className="absolute -bottom-1 rounded-lg w-full h-8 skeleton"></div>
                   </div>
                 </div>
 
                 <div className="size-full relative bg-neutral-900">
-                  <div className="h-full absolute left-0 z-1 lg:left-[190px] right-0 grid grid-cols-6 grid-rows-7 ">
+                  <div className="h-full absolute left-0 z-1 lg:left-47.5 right-0 grid grid-cols-6 grid-rows-7 ">
                     <div className="col-span-3 absolute bottom-0 row-span-1 col-start-1 col-end-4 row-start-7 md:col-start-3 lg:col-start-2 md:relative md:col-span-6 md:row-start-1 flex gap-x-0.5 items-center px-1 flex-wrap h-fit">
                       <span className="skeleton-text h-5 w-12 rounded-full shrink-0"></span>
                       <span className="skeleton-text h-5 w-12 rounded-full shrink-0"></span>
@@ -259,13 +281,9 @@ const AnimeDetail: FC = () => {
         )}
       </section>
 
-      {title && (
-        <AnimeExtensionResult id={data?.data?.Media.idMal} title={title} />
-      )}
-
-      {title && (
-        <ExtensionResult title={title} idMal={data?.data?.Media.idMal} />
-      )}
+      <section className="my-5 p-2 h-full w-full">
+        {title && <AnimeExtensionsResults title={title} idMal={idMal} />}
+      </section>
     </>
   );
 };

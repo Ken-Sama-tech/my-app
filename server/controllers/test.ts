@@ -18,7 +18,7 @@ const testController = async () => {
           episode: 1,
           bookmarked: true,
           playBackPosition: 0,
-          episodeTitle: null,
+          episodeTitle: "",
           sources: [
             {
               name: "allanime",

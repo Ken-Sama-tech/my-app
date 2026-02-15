@@ -18,10 +18,19 @@ const queryData: string[] = [
   "format",
 ];
 
-const queryPage = anilist().Page<AnilistPageQueryResponse>({ perPage: 20 });
-const getTrending = queryPage.media({ sort: ["TRENDING_DESC"] }, queryData);
-const getPopular = queryPage.media({ sort: ["POPULARITY_DESC"] }, queryData);
-const getTopAnime = queryPage.media({ sort: ["SCORE_DESC"] }, queryData);
+const queryPage = anilist().page<AnilistPageQueryResponse>({ perPage: 20 });
+const getTrending = queryPage.media(
+  { /*isAdult: true,*/ sort: ["TRENDING_DESC"] },
+  queryData,
+);
+const getPopular = queryPage.media(
+  { /*isAdult: true,*/ sort: ["POPULARITY_DESC"] },
+  queryData,
+);
+const getTopAnime = queryPage.media(
+  { /*isAdult: true,*/ sort: ["SCORE_DESC"] },
+  queryData,
+);
 
 const AnimeHomePage: FC = () => {
   const {
@@ -67,7 +76,7 @@ const AnimeHomePage: FC = () => {
               return (
                 <Link
                   to={`/anime/${item.id}/${slugify(
-                    String(romaji || native || english)
+                    String(romaji || native || english),
                   )}`}
                   key={item.id}
                 >
@@ -99,7 +108,7 @@ const AnimeHomePage: FC = () => {
               return (
                 <Link
                   to={`/anime/${item.id}/${slugify(
-                    String(romaji || native || english)
+                    String(romaji || native || english),
                   )}`}
                   key={item.id}
                 >
@@ -130,7 +139,7 @@ const AnimeHomePage: FC = () => {
                 <Link
                   key={item.id}
                   to={`/anime/${item.id}/${slugify(
-                    String(romaji || native || english)
+                    String(romaji || native || english),
                   )}`}
                 >
                   <MediaCard
