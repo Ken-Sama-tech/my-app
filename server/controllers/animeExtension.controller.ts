@@ -1,11 +1,11 @@
-import allanime from "../../extensions/anime/allanime/index.js";
-import type { Base } from "../../extensions/anime/base/index.js";
+import type { Base } from "../../extensions/anime/Base/index.js";
 import type { Request, Response } from "express";
 import type {
-  AnimeExtensions,
   Languages,
   Translation,
-} from "../../shared-types/extensions/anime.js";
+  ValidExtensionId,
+  Id,
+} from "../../shared-types/extensions/index.js";
 import type {
   SearchAnimeResBody,
   GetTranslationsResBody,
@@ -13,77 +13,58 @@ import type {
   GetEpisodeResBody,
 } from "../../shared-types/controllers/animeExtensions.js";
 import Fuse from "fuse.js";
+import { allanime, hentaiHaven } from "../../extensions/anime/index.js";
+import { defaultExtension } from "../../vars/index.js";
 
-type SearchAnimeReqQuery = {
-  extension?: AnimeExtensions;
+export type CommonReqQuery = {
+  extension?: ValidExtensionId;
+};
+
+type SearchAnimeReqQuery = CommonReqQuery & {
   query?: string;
   idMal?: string;
 };
 
-type GetTranslationReqQuery = {
-  id?: string;
-  extension?: AnimeExtensions;
+type GetTranslationReqQuery = CommonReqQuery & {
+  id: Id;
 };
 
-type GetEpisodeListReqQuery = {
-  extension?: AnimeExtensions;
-  id?: string;
+type GetEpisodeListReqQuery = CommonReqQuery & {
+  id: Id;
   translation?: Translation;
   lang?: Languages;
 };
 
-type GetEpisodeReqQuery = {
-  extension?: AnimeExtensions;
-  id?: string;
+type GetEpisodeReqQuery = CommonReqQuery & {
+  id: Id;
   translation?: Translation;
   episode?: string | number;
 };
 
-const extensions = new Map<AnimeExtensions, ReturnType<Base>>([
-  ["allanime", allanime()],
+const extensions = new Map<ValidExtensionId, ReturnType<Base>>([
+  ["699a693514082cb82a291c71", allanime()],
+  ["699a69a314082cb82a291c72", hentaiHaven()],
 ]);
-
-const responseTemplate = {
-  data: null,
-  error: true,
-  message: "",
-  status: 400,
-};
 
 const searchAnime = async (
   req: Request<null, SearchAnimeResBody, null, SearchAnimeReqQuery>,
   res: Response<SearchAnimeResBody>,
 ): Promise<void> => {
-  const { extension = "allanime", query = "", idMal } = req.query;
+  const { extension = defaultExtension, query = "", idMal } = req.query;
 
   try {
-    if (!query) {
-      res.status(400).json({
-        ...responseTemplate,
-        message: "Missing required parameter 'query'.",
-      });
-      return;
-    }
+    const provider = extensions.get(extension as ValidExtensionId);
 
-    if (!extension) {
-      res.status(400).json({
-        ...responseTemplate,
-        message: "Missing required parameter 'extension'.",
-      });
-      return;
-    }
-
-    const provider = extensions.get(extension.toLowerCase() as AnimeExtensions);
-
-    if (!provider) throw new Error("Please provide a valid extension name");
-
-    const response = await provider.search(query);
+    const response = await provider!.search(query);
 
     const { payload, error, message, status } = response;
 
     if (error) {
       res.status(status).json({
-        ...responseTemplate,
+        data: {
+          extensionId: extension,
+        },
+        error,
         message,
         status,
       });
@@ -93,17 +74,17 @@ const searchAnime = async (
 
     if (!payload) {
       res.status(404).json({
-        ...responseTemplate,
         data: {
-          extension: provider.extension,
+          extensionId: extension,
         },
+        error: true,
         message: "Not found",
         status: 404,
       });
       return;
     }
 
-    const { results, extension: providerName } = payload;
+    const { results, name: providerName } = payload;
 
     if (!Array.isArray(results))
       throw new Error("Unexpected error: 'results' is not an array");
@@ -119,7 +100,10 @@ const searchAnime = async (
 
       if (!anime) {
         res.status(404).json({
-          ...responseTemplate,
+          data: {
+            extensionId: extension,
+          },
+          error: true,
           message: `Please make sure that malid "${idMal}" corresponds to anime "${query}"`,
           status: 404,
         });
@@ -129,7 +113,8 @@ const searchAnime = async (
       const { alternatives, ...rest } = anime;
       res.status(200).json({
         data: {
-          extension: providerName,
+          extensionId: extension,
+          name: providerName,
           result: rest,
         },
         error: false,
@@ -139,20 +124,19 @@ const searchAnime = async (
       return;
     }
 
-    const matches = fuse
-      .search(query)
-      .map((r) => {
-        return {
-          data: r.item,
-          score: r.score || 0,
-        };
-      })
-      .sort((a, b) => b.score - a.score);
+    const matches = fuse.search(query).map((r) => {
+      return {
+        data: r.item,
+        score: r.score || 0,
+      };
+    });
 
     if (!matches[0]) {
       res.status(404).json({
-        ...responseTemplate,
-        error: false,
+        data: {
+          extensionId: extension,
+        },
+        error: true,
         message: `Can't find an anime with title "${query}"`,
         status: 404,
       });
@@ -163,7 +147,8 @@ const searchAnime = async (
 
     res.status(200).json({
       data: {
-        extension: providerName,
+        extensionId: extension,
+        name: providerName,
         result: rest,
       },
       error: false,
@@ -172,7 +157,10 @@ const searchAnime = async (
     });
   } catch (e: any) {
     res.status(500).json({
-      ...responseTemplate,
+      data: {
+        extensionId: extension,
+      },
+      error: true,
       message: e?.message || e,
       status: 500,
     });
@@ -183,29 +171,21 @@ const getTranslations = async (
   req: Request<null, GetTranslationsResBody, null, GetTranslationReqQuery>,
   res: Response<GetTranslationsResBody>,
 ): Promise<void> => {
-  const { id, extension = "allanime" } = req.query;
+  const { id, extension = defaultExtension } = req.query;
 
   try {
-    if (!id) {
-      res.status(400).json({
-        ...responseTemplate,
-        message: `Missing required parameter 'id'`,
-        status: 400,
-      });
-      return;
-    }
-
     const provider = extensions.get(extension);
 
-    if (!provider) throw new Error("Please provide a valid extension name");
-
-    const response = await provider.getTranslations(id);
+    const response = await provider!.getTranslations(id);
 
     const { payload, message, error, status } = response;
 
     if (error) {
       res.status(status).json({
-        ...responseTemplate,
+        data: {
+          extensionId: extension,
+        },
+        error: true,
         message,
         status,
       });
@@ -214,7 +194,10 @@ const getTranslations = async (
 
     if (!payload) {
       res.status(404).json({
-        ...responseTemplate,
+        data: {
+          extensionId: extension,
+        },
+        error: true,
         message: "Not found",
         status: 404,
       });
@@ -222,14 +205,17 @@ const getTranslations = async (
     }
 
     res.status(200).json({
-      data: payload,
+      data: { ...payload, extensionId: extension },
       error: false,
       message: "success",
       status: 200,
     });
   } catch (e: any) {
     res.status(500).json({
-      ...responseTemplate,
+      data: {
+        extensionId: extension,
+      },
+      error: true,
       message: e.message || e,
       status: 500,
     });
@@ -241,7 +227,7 @@ const getEpisodeList = async (
   res: Response<GetEpisodeListResBody>,
 ): Promise<void> => {
   const {
-    extension = "allanime",
+    extension = defaultExtension,
     id,
     translation = "sub",
     lang = "Eng",
@@ -250,24 +236,16 @@ const getEpisodeList = async (
   try {
     const provider = extensions.get(extension);
 
-    if (!id) {
-      res.status(400).json({
-        ...responseTemplate,
-        message: "Missing required parameter 'id'",
-        status: 400,
-      });
-      return;
-    }
-
-    if (!provider) throw new Error("Please provide a valid extension name");
-
-    const response = await provider.getEpisodeList(id, { translation, lang });
+    const response = await provider!.getEpisodeList(id, { translation, lang });
 
     const { payload, message, error, status } = response;
 
     if (error) {
       res.status(status).json({
-        ...responseTemplate,
+        data: {
+          extensionId: extension,
+        },
+        error: true,
         message,
         status,
       });
@@ -276,7 +254,10 @@ const getEpisodeList = async (
 
     if (!payload) {
       res.status(404).json({
-        ...responseTemplate,
+        data: {
+          extensionId: extension,
+        },
+        error: true,
         message: "Not found",
         status: 404,
       });
@@ -284,14 +265,17 @@ const getEpisodeList = async (
     }
 
     res.status(200).json({
-      data: payload,
+      data: { ...payload, extensionId: extension },
       error,
       message,
       status: 200,
     });
   } catch (e: any) {
     res.status(500).json({
-      ...responseTemplate,
+      data: {
+        extensionId: extension,
+      },
+      error: true,
       message: e.message || e,
       status: 500,
     });
@@ -303,7 +287,7 @@ const getEpisode = async (
   res: Response<GetEpisodeResBody>,
 ): Promise<void> => {
   const {
-    extension = "allanime",
+    extension = defaultExtension,
     id,
     translation = "sub",
     episode = 1,
@@ -312,25 +296,7 @@ const getEpisode = async (
   try {
     const provider = extensions.get(extension);
 
-    if (!id) {
-      res.status(400).json({
-        ...responseTemplate,
-        message: "Missing required parameter 'id'.",
-      });
-      return;
-    }
-
-    if (!extension) {
-      res.status(400).json({
-        ...responseTemplate,
-        message: "Missing required parameter 'extension'.",
-      });
-      return;
-    }
-
-    if (!provider) throw new Error("Please provide a valid extension name");
-
-    const response = await provider.getEpisodeLink(id, {
+    const response = await provider!.getEpisodeLink(id, {
       translation,
       episode: Number(episode),
     });
@@ -339,7 +305,10 @@ const getEpisode = async (
 
     if (error) {
       res.status(status).json({
-        ...responseTemplate,
+        data: {
+          extensionId: extension,
+        },
+        error: true,
         message,
         status,
       });
@@ -348,7 +317,10 @@ const getEpisode = async (
 
     if (!payload) {
       res.status(404).json({
-        ...responseTemplate,
+        data: {
+          extensionId: extension,
+        },
+        error: true,
         message: "Not found",
         status: 404,
       });
@@ -356,18 +328,22 @@ const getEpisode = async (
     }
 
     res.status(200).json({
-      data: payload,
+      data: { ...payload, extensionId: extension },
       status: 200,
       message: message,
       error: false,
     });
   } catch (e: any) {
     res.status(500).json({
-      ...responseTemplate,
+      data: {
+        extensionId: extension,
+      },
+      error: true,
       message: e.message || e,
       status: 500,
     });
   }
 };
 
+export default extensions;
 export { searchAnime, getEpisode, getEpisodeList, getTranslations };

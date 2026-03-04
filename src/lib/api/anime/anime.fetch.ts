@@ -14,6 +14,7 @@ import type {
   SearchAnimeResBody,
   GetEpisodeListResBody,
 } from "../../../../shared-types/controllers/animeExtensions";
+import { defaultExtension } from "../../../../vars";
 
 const baseURL = getHostName();
 const animeExtURL = `${baseURL}/extensions/anime`;
@@ -28,7 +29,7 @@ export const fetchAnime = async (
   const { extensions, title, idMal } = args;
 
   const results = await Promise.all(
-    extensions.map(async (extension) => {
+    extensions.map(async (extension): Promise<SearchAnimeResBody> => {
       try {
         const response = await axios.get<SearchAnimeResBody>(searchURL, {
           params: {
@@ -44,10 +45,10 @@ export const fetchAnime = async (
       } catch (e: any) {
         return {
           data: {
-            extension,
+            extensionId: extension,
           },
           error: true,
-          message: e?.message || e,
+          message: e.message || e,
           status: e.status || 400,
         };
       }
@@ -60,7 +61,7 @@ export const fetchAnime = async (
 export const fetchTranslations = async (
   args: FetchTranslationsArgs,
 ): Promise<FetchTranslationsResponse> => {
-  const { id, extension = "allanime" } = args;
+  const { id, extension = defaultExtension } = args;
 
   try {
     const response = await axios.get<FetchTranslationsResponse>(
@@ -73,11 +74,12 @@ export const fetchTranslations = async (
       },
     );
 
-    console.log(response.data);
     return response.data;
   } catch (e: any) {
     return {
-      data: null,
+      data: {
+        extensionId: extension,
+      },
       error: true,
       message: e.message || e,
       status: e.status || 400,
@@ -90,7 +92,7 @@ export const fetchEpisodeList = async (
 ): Promise<FetchEpisodeListResponse> => {
   const {
     id,
-    extension = "allanime",
+    extension = defaultExtension,
     translation = "sub",
     lang = "Eng",
   } = args;
@@ -109,7 +111,7 @@ export const fetchEpisodeList = async (
   } catch (e: any) {
     return {
       data: {
-        extension,
+        extensionId: extension,
       },
       error: true,
       message: e.message || e,
@@ -121,7 +123,12 @@ export const fetchEpisodeList = async (
 export const fetchEpisode = async (
   args: FetchEpisodeArgs,
 ): Promise<FetchEpisodeResponse> => {
-  const { id, extension = "allanime", translation = "sub", episode = 1 } = args;
+  const {
+    id,
+    extension = defaultExtension,
+    translation = "sub",
+    episode = 1,
+  } = args;
 
   try {
     const response = await axios.get<FetchEpisodeResponse>(episodeURL, {
@@ -136,7 +143,9 @@ export const fetchEpisode = async (
     return response.data;
   } catch (e: any) {
     return {
-      data: null,
+      data: {
+        extensionId: extension,
+      },
       error: true,
       message: e.message || e,
       status: e.status || 400,

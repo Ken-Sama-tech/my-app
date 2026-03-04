@@ -15,6 +15,13 @@ type GetExtensionsReqQuery = {
   name?: AnimeExtensions;
 };
 
+export type GetExtensionResBody = {
+  data: [];
+  error: true;
+  message: string;
+  status: number;
+};
+
 type ExtensionsFields = {
   -readonly [K in keyof ExtensionsSchema]?: ExtensionsSchema[K];
 };
@@ -86,7 +93,7 @@ export const updateExtensions = async (
     );
 
     res.status(200).json({
-      acknowledged: response.acknowledged,
+      acknowledged: true,
       error: false,
       message: JSON.stringify(response),
       status: 200,

@@ -11,8 +11,16 @@ import AnimeHomePage from "./pages/Anime/AnimeHomePage";
 import LibraryHomePage from "./pages/Library/LibraryHomePage";
 import AnimeDetail from "./pages/Anime/AnimeDetail";
 import AnimeWatch from "./pages/Anime/AnimeWatch";
+import AnimeFilter from "./pages/Anime/AnimeFilter";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+    },
+  },
+});
+
 const routes = (await axios.get<Array<RoutesResponse>>("/routes.json")).data;
 const routesMap: Map<RoutesKey, RoutesValue> = new Map([
   [
@@ -23,6 +31,7 @@ const routesMap: Map<RoutesKey, RoutesValue> = new Map([
       childrenRoutes: new Map([
         ["Anime Detail", <AnimeDetail />],
         ["Watch", <AnimeWatch />],
+        ["Filter", <AnimeFilter />],
       ]),
     },
   ],

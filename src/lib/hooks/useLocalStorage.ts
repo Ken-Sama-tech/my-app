@@ -1,18 +1,23 @@
 type Key = string;
 type Value = string | object | number | boolean;
-type LocalStorageResponse = {
-  message: string | null;
-  data?: unknown;
-  error?: boolean;
-  success?: boolean;
-};
+type LocalStorageResponse =
+  | {
+      message: string;
+      data?: unknown;
+      success?: true;
+    }
+  | {
+      data: undefined;
+      success?: false;
+      message: string;
+    };
 
 const useLocalStorage = () => {
   type Response<T = string> = LocalStorageResponse & {
     data?: T | null;
   };
 
-  const get = <T,>(key: Key): Response<T> => {
+  const get = <T>(key: Key): Response<T> => {
     try {
       const data: string = localStorage.getItem(key) || "";
       return {
@@ -22,8 +27,9 @@ const useLocalStorage = () => {
       };
     } catch (error: any) {
       return {
-        error: true,
         message: error.message,
+        success: false,
+        data: undefined,
       };
     }
   };
@@ -38,8 +44,9 @@ const useLocalStorage = () => {
       };
     } catch (error: any) {
       return {
-        error: true,
         message: error.message,
+        success: false,
+        data: undefined,
       };
     }
   };
@@ -53,8 +60,9 @@ const useLocalStorage = () => {
       };
     } catch (error: any) {
       return {
-        error: true,
         message: error.message,
+        success: false,
+        data: undefined,
       };
     }
   };
@@ -68,8 +76,9 @@ const useLocalStorage = () => {
       };
     } catch (error: any) {
       return {
-        error: true,
         message: error.message,
+        success: false,
+        data: undefined,
       };
     }
   };

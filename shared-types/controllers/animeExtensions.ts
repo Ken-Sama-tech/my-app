@@ -1,5 +1,5 @@
+import type { ObjectId } from "mongoose";
 import type {
-  AnimeExtensions,
   Languages,
   Id,
   Sub,
@@ -7,44 +7,77 @@ import type {
   EpisodeList,
   Translation,
   Source,
+  ValidExtensionId,
+  AnimeExtensions,
 } from "../extensions";
 
-type Response<T> = {
-  data: T | null;
-  error: boolean;
-  message: string;
-  status: number;
-};
+type Response<T, E = null> =
+  | {
+      data: T;
+      error: false;
+      message: string;
+      status: number;
+    }
+  | {
+      data: E;
+      error: true;
+      message: string;
+      status: number;
+    };
 
-export type SearchAnimeResBody = Response<{
-  extension: AnimeExtensions;
-  result?: {
-    title: string;
-    malId: number;
+export type SearchAnimeResBody = Response<
+  {
+    name: AnimeExtensions;
+    extensionId: ValidExtensionId | ObjectId;
+    result: {
+      title: string;
+      malId: number;
+      id: Id;
+    };
+  },
+  {
+    extensionId: ValidExtensionId | ObjectId;
+  }
+>;
+
+export type GetTranslationsResBody = Response<
+  {
+    name: AnimeExtensions;
+    extensionId: ValidExtensionId | ObjectId;
+    subs: Sub[];
+    dubs: Dub[];
+  },
+  {
+    extensionId: ValidExtensionId | ObjectId;
+  }
+>;
+
+export type GetEpisodeListResBody = Response<
+  {
+    name: AnimeExtensions;
+    extensionId: ValidExtensionId | ObjectId;
     id: Id;
-  };
-}>;
+    language: Languages;
+    translation: Translation;
+    episodeList: EpisodeList[];
+  },
+  {
+    extensionId: ValidExtensionId | ObjectId;
+  }
+>;
 
-export type GetTranslationsResBody = Response<{
-  extension: AnimeExtensions;
-  subs?: Sub[];
-  dubs?: Dub[];
-}>;
-
-export type GetEpisodeListResBody = Response<{
-  extension: AnimeExtensions;
-  id?: Id;
-  language?: Languages;
-  translation?: Translation;
-  episodeList?: EpisodeList[];
-}>;
-
-export type GetEpisodeResBody = Response<{
-  sources?: Source[];
-  episode?: number;
-  episodeTitle?: string;
-  lang?: Languages;
-  translation?: Translation;
-  extension: AnimeExtensions;
-  referrer: string;
-}>;
+export type GetEpisodeResBody = Response<
+  {
+    sources: Source[];
+    episode: number;
+    episodeTitle?: string;
+    lang: Languages;
+    translation: Translation;
+    name: AnimeExtensions;
+    extensionId: ValidExtensionId | ObjectId;
+    referrer: string;
+  },
+  {
+    extensionId: ValidExtensionId | ObjectId;
+  }
+>;

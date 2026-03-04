@@ -25,7 +25,7 @@ import { hexDecoder } from "./utils.js";
 import axios from "axios";
 import { AnimeExtensions, Id } from "../../../shared-types/extensions";
 
-const allanime: Base = () => {
+const hentaiHaven: Base = () => {
   const api = "https://api.allanime.day/api";
   const limit = 41;
   const page = 1;
@@ -35,7 +35,7 @@ const allanime: Base = () => {
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
   };
 
-  const name: AnimeExtensions = "AllManga";
+  const name: AnimeExtensions = "Hentai Haven";
 
   const search: Search = async (query: string): Promise<SearchResponse> => {
     const gql = searchQuery;
@@ -263,4 +263,4 @@ const allanime: Base = () => {
   };
 };
 
-export default allanime;
+export default hentaiHaven;

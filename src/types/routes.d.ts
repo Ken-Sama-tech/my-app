@@ -13,7 +13,7 @@ export type RoutesResponse = {
 
 export type RoutesKey = Keys;
 
-export type ChildRoutesKey = "Anime Detail" | "Watch";
+export type ChildRoutesKey = "Anime Detail" | "Watch" | "Filter";
 
 export type RoutesValue = {
   default: ReactElement;

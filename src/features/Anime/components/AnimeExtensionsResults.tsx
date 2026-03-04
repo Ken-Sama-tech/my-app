@@ -2,9 +2,11 @@ import type { FC } from "react";
 import { useCallback, useRef } from "react";
 import { fetchExtensions, updateExtensions } from "../../../lib/api/extensions";
 import { fetchAnime } from "../../../lib/api/anime";
-import type { ExtensionsSchema } from "../../../../shared-types/extensions";
+import type {
+  ExtensionsSchema,
+  ValidExtensionId,
+} from "../../../../shared-types/extensions";
 import { useQuery } from "@tanstack/react-query";
-import type { AnimeExtensions } from "../../../../shared-types/extensions";
 import { Ellipsis } from "lucide-react";
 import type { ObjectId } from "mongoose";
 import { MoveRight, FileImage } from "lucide-react";
@@ -42,7 +44,7 @@ const AnimeExtensionResult: FC<AnimeExtensionResultProps> = ({
         )}
 
         {!imageUrl && <FileImage className="h-8 shrink-0 select-none" />}
-        <span className="text-lg capitalize">{extensionName}</span>
+        <span className="text-lg">{extensionName}</span>
       </div>
 
       {hasResult && (
@@ -92,12 +94,13 @@ const AnimeExtensionsResults: FC<AnimeExtensionsResultsProps> = ({
           type: "anime",
         });
 
-        const activeExtensions: AnimeExtensions[] = [];
+        const activeExtensions: ValidExtensionId[] = [];
 
         if (!response.error && response.data) {
           response.data.map((extension) => {
-            const name = extension.name;
-            if (extension.active) activeExtensions.push(name);
+            const _id: unknown = extension._id;
+            if (extension.active)
+              activeExtensions.push(_id as ValidExtensionId);
 
             const index = extensions.current.findIndex(
               ({ _id }) => extension._id === _id,
@@ -143,8 +146,6 @@ const AnimeExtensionsResults: FC<AnimeExtensionsResultsProps> = ({
     [],
   );
 
-  console.log(search);
-
   return (
     <div className="w-full h-full relative flex">
       {isLoading && (
@@ -176,12 +177,16 @@ const AnimeExtensionsResults: FC<AnimeExtensionsResultsProps> = ({
                         key={`${extension}-${idx}`}
                         className="px-1 py-0.5 rounded-sm w-full flex gap-1 cursor-pointer hover:bg-neutral-500"
                       >
-                        <div
-                          className="aspect-square h-full bg-cover bg-center"
-                          style={{
-                            backgroundImage: `url("${extension.logo}")`,
-                          }}
-                        ></div>
+                        {extension.logo && (
+                          <div
+                            className="aspect-square h-full bg-cover bg-center"
+                            style={{
+                              backgroundImage: `url("${extension.logo}")`,
+                            }}
+                          ></div>
+                        )}
+
+                        {!extension.logo && <FileImage />}
                         <span className="grow text-start">
                           {extension.name}
                         </span>
@@ -199,31 +204,35 @@ const AnimeExtensionsResults: FC<AnimeExtensionsResultsProps> = ({
               <div className="h-0.5 my-1 w-full bg-neutral-300 rounded-full"></div>
               <div className="h-full w-full py-2 grow grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-items-start place-items-start">
                 {search?.map((res) => {
-                  const { error, data, message } = res;
+                  const { error, data } = res;
+
+                  const { logo, name } =
+                    extensions.current.find(
+                      ({ _id }: { _id: unknown }) =>
+                        (_id as ValidExtensionId) === data.extensionId,
+                    ) || {};
 
                   if (error) {
-                    console.error("Error:", message);
+                    return (
+                      <AnimeExtensionResult
+                        hasResult={false}
+                        extensionName={name || "Error 404"}
+                        key={`${data.extensionId}-res-${title}`}
+                        imageUrl={logo}
+                      />
+                    );
                   }
 
-                  if (!data) {
-                    console.log("No result found");
-                    return;
-                  }
-
-                  const { extension, result } = data;
+                  const { extensionId, result, name: providerName } = data;
                   const id = result?.id;
-
-                  const { logo } =
-                    extensions.current.find(({ name }) => name == extension) ||
-                    {};
 
                   return (
                     <AnimeExtensionResult
-                      to={`watch?extension=${extension}&id=${id}`}
+                      to={`watch?extension=${data.extensionId}&id=${id}`}
                       hasResult={!error}
-                      extensionName={extension}
+                      extensionName={providerName}
                       imageUrl={logo}
-                      key={`${extension}-res-${title}`}
+                      key={`${extensionId}-res-${title}`}
                     />
                   );
                 })}

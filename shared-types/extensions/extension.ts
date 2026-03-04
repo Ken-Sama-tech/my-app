@@ -11,3 +11,10 @@ export type ExtensionsSchema = {
   type: ExtensionTypes;
   _id: ObjectId;
 };
+
+const validExtensionIdList = [
+  "699a693514082cb82a291c71",
+  "699a69a314082cb82a291c72",
+] as const;
+
+export type ValidExtensionId = (typeof validExtensionIdList)[number];

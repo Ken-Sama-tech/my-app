@@ -1,9 +1,9 @@
 import type {
-  AnimeExtensions,
   Id,
   Translation,
   Languages,
-} from "../../../../shared-types/extensions/anime";
+  ValidExtensionId,
+} from "../../../../shared-types/extensions/";
 import type {
   SearchAnimeResBody,
   GetEpisodeListResBody,
@@ -12,42 +12,34 @@ import type {
 } from "../../../../shared-types/controllers/animeExtensions";
 
 export type FetchAnimeArgs = {
-  extensions: AnimeExtensions[];
+  extensions: ValidExtensionId[];
   title: string;
   idMal?: number;
 };
 
-export type FetchAnimeResponse = {
-  -readonly [K in keyof SearchAnimeResBody]: SearchAnimeResBody[K];
-};
+export type FetchAnimeResponse = SearchAnimeResBody;
 
 export type FetchEpisodeListArgs = {
-  extension?: AnimeExtensions;
+  extension?: ValidExtensionId;
   id: Id;
   translation?: Translation;
   lang?: Languages;
 };
 
-export type FetchEpisodeListResponse = {
-  -readonly [K in keyof GetEpisodeListResBody]: GetEpisodeListResBody[K];
-};
+export type FetchEpisodeListResponse = GetEpisodeListResBody;
 
 export type FetchTranslationsArgs = {
   id: Id;
-  extension?: AnimeExtensions;
+  extension?: ValidExtensionId;
 };
 
-export type FetchTranslationsResponse = {
-  -readonly [K in keyof GetTranslationsResBody]: GetTranslationsResBody[K];
-};
+export type FetchTranslationsResponse = GetTranslationsResBody;
 
 export type FetchEpisodeArgs = {
-  extension?: AnimeExtensions;
+  extension?: ValidExtensionId;
   id: Id;
   translation?: Translation;
   episode?: number;
 };
 
-export type FetchEpisodeResponse = {
-  -readonly [K in keyof GetEpisodeResBody]: GetEpisodeResBody[K];
-};
+export type FetchEpisodeResponse = GetEpisodeResBody;

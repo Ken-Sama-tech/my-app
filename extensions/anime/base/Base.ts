@@ -31,8 +31,6 @@ export type SearchResponseMetaData = {
 //   lastPage?: LastPage;
 // };
 
-type Error = boolean;
-
 type Status = number;
 
 type Message = string;
@@ -45,25 +43,32 @@ type Message = string;
 
 // type LastPage = number;
 
-type Response<D> = {
-  readonly payload?: D;
-  readonly error: Error;
-  readonly status: Status;
-  readonly message: Message;
-};
+type Response<D> =
+  | {
+      readonly payload: undefined | null;
+      readonly error: true;
+      readonly status: Status;
+      readonly message: Message;
+    }
+  | {
+      readonly payload: D;
+      readonly error: false;
+      readonly status: Status;
+      readonly message: Message;
+    };
 
 export type SearchResponse = Response<{
   results?: SearchResponseMetaData[];
-  extension: AnimeExtensions;
+  name: AnimeExtensions;
   // info: SearchResponseInfo;
 }>;
 
 export type Search = (query: string) => Promise<SearchResponse>;
 
 export type GetTranslationsResponse = Response<{
-  extension: AnimeExtensions;
-  subs?: Sub[];
-  dubs?: Dub[];
+  name: AnimeExtensions;
+  subs: Sub[];
+  dubs: Dub[];
 }>;
 
 export type GetTranslations = (id: Id) => Promise<GetTranslationsResponse>;
@@ -74,7 +79,7 @@ type GetEpisodeListArgs = {
 };
 
 export type GetEpisodeListResponse = Response<{
-  extension: AnimeExtensions;
+  name: AnimeExtensions;
   id: Id;
   language: Languages;
   translation: Translation;
@@ -98,16 +103,16 @@ export type GetEpisodeLinkResponse = Response<{
   episodeTitle: string;
   lang: Languages;
   translation: Translation;
-  extension: AnimeExtensions;
+  name: AnimeExtensions;
 }>;
 
 export type GetEpisodeLink = (
-  id: string,
+  id: Id,
   args?: GetEpisodeLinkArgs,
 ) => Promise<GetEpisodeLinkResponse>;
 
 export type Base = () => {
-  extension: AnimeExtensions;
+  name: AnimeExtensions;
   referrer: string;
   search: Search;
   getEpisodeList: GetEpisodeList;

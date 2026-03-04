@@ -4,8 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import SliderCarousel from "../../components/carousels/SliderCarousel";
 import slugify from "../../lib/utils/slugify";
 import { Link } from "react-router-dom";
-import type { FC } from "react";
+import { useState, type FC } from "react";
 import type { AnilistPageQueryResponse } from "./types/anime";
+import { useSearchParams } from "react-router-dom";
+import useLocalStorage from "../../lib/hooks/useLocalStorage";
 
 const queryData: string[] = [
   "id",
@@ -19,20 +21,26 @@ const queryData: string[] = [
 ];
 
 const queryPage = anilist().page<AnilistPageQueryResponse>({ perPage: 20 });
-const getTrending = queryPage.media(
-  { /*isAdult: true,*/ sort: ["TRENDING_DESC"] },
-  queryData,
-);
-const getPopular = queryPage.media(
-  { /*isAdult: true,*/ sort: ["POPULARITY_DESC"] },
-  queryData,
-);
-const getTopAnime = queryPage.media(
-  { /*isAdult: true,*/ sort: ["SCORE_DESC"] },
-  queryData,
-);
 
 const AnimeHomePage: FC = () => {
+  const ls = useLocalStorage();
+  const [searchParams] = useSearchParams();
+  const [isAdult, setIsAdult] = useState<boolean>(
+    searchParams.get("isAdult") === "true",
+  );
+
+  const getTrending = queryPage.media(
+    { isAdult: isAdult, sort: ["TRENDING_DESC"] },
+    queryData,
+  );
+  const getPopular = queryPage.media(
+    { isAdult: isAdult, sort: ["POPULARITY_DESC"] },
+    queryData,
+  );
+  const getTopAnime = queryPage.media(
+    { isAdult: isAdult, sort: ["SCORE_DESC"] },
+    queryData,
+  );
   const {
     data: trendingAnime,
     isLoading: isTrendingAnimeLoading,
@@ -61,7 +69,10 @@ const AnimeHomePage: FC = () => {
   return (
     <>
       <div className="flex overflow-auto flex-wrap gap-10 rm-scrollbar p-5">
-        <SliderCarousel heading="Trending Anime" url="/anime/trending">
+        <SliderCarousel
+          heading="Trending Anime"
+          url={`/anime/filter?sort=TRENDING_DESC`}
+        >
           {(isTrendingAnimeLoading || trendingAnimeHasError) &&
             Array.from({ length: 20 }, (_, idx) => {
               return (
@@ -94,7 +105,10 @@ const AnimeHomePage: FC = () => {
               );
             })}
         </SliderCarousel>
-        <SliderCarousel heading="Popular Anime" url="/anime/popular">
+        <SliderCarousel
+          heading="Popular Anime"
+          url={`/anime/filter?sort=POPULARITY_DESC`}
+        >
           {(isPopularAnimeLoading || popularAnimeHasError) &&
             Array.from({ length: 20 }, (_, idx) => {
               return (
@@ -126,7 +140,10 @@ const AnimeHomePage: FC = () => {
               );
             })}
         </SliderCarousel>
-        <SliderCarousel heading="Top Anime" url="/anime/top">
+        <SliderCarousel
+          heading="Top Anime"
+          url={`/anime/filter?sort=SCORE_DESC`}
+        >
           {(isTopAnimeLoading || topAnimeHasError) &&
             Array.from({ length: 20 }, (_, idx) => {
               return <MediaCard snap key={idx} isError={topAnimeHasError} />;

@@ -2,7 +2,7 @@ type DubTranslation = "Eng" | "Chi" | "Jap";
 
 type SubTranslation = "Eng";
 
-export type AnimeExtensions = "allanime" | "bato.to" | "hentai haven";
+export type AnimeExtensions = "AllManga" | "bato.to" | "Hentai Haven";
 
 export type Translation = "sub" | "dub";
 

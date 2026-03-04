@@ -111,6 +111,28 @@
   animation: fade-in 1s;
 }
 
+.custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply bg-neutral-900 rounded-full;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-neutral-400 rounded-full transition-colors duration-200;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-600;
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    @apply bg-blue-700;
+  }
+}
+
 @keyframes fade-in {
   0%,
   50%,

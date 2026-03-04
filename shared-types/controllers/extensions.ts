@@ -1,6 +1,13 @@
-export type UpdateExtensionsResBody = {
-  acknowledged: boolean;
-  error: boolean;
-  message: string;
-  status: number;
-};
+export type UpdateExtensionsResBody =
+  | {
+      acknowledged: true;
+      error: false;
+      message: string;
+      status: number;
+    }
+  | {
+      acknowledged: false;
+      error: true;
+      message: string;
+      status: number;
+    };

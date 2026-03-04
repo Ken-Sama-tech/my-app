@@ -8,7 +8,7 @@
     "dev": "concurrently \"--env-file=.env\" \"vite --host\" \"nodemon ./dist/backend/server/server.js\" \"tsc -b -w\" ",
     "build": "concurrently \"rimraf dist\" \"tsc -b\"  \"vite build && npm run copy-html\"",
     "lint": "eslint .",
-    "preview": "concurrently \"vite preview\" \"--env-file=.env\"  \"nodemon ./dist/backend/server/server.js\""
+    "preview": "concurrently \"vite preview --host\" \"--env-file=.env\"  \"nodemon ./dist/backend/server/server.js\""
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.12",
